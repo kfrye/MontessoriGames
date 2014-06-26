@@ -5,8 +5,10 @@
     <script>
         var sound;
         var stage;
-        var circle1;
-        var circle2;
+        var rCircle = new Array();
+        var lCircle = new Array();
+        var rCircle1, rCircle2;
+        var lCircle1, lCircle2;
 
         function init() {
             if (!createjs.Sound.initializeDefaultPlugins()) {return;}
@@ -19,19 +21,48 @@
 
             createjs.Sound.addEventListener("fileload", handleLoad);
             createjs.Sound.registerManifest(manifest, audioPath);
+            stage = new createjs.Stage("demoCanvas");
+
+            for(i=1; i<=2; i++) {
+                rCircle[i] = new createjs.Shape();
+                rCircle[i].name = "rCircle" + i;
+                lCircle[i] = new createjs.Shape();
+                lCircle[i].name = "lCircle" + i;
+
+                drawCircle(rCircle[i], "red", i);
+                drawCircle(lCircle[i], "blue", i);
+            }
+        }
+
+        function drawCircle(circle, color, index) {
+
+            console.log(circle.name+" "+color);
+            circle.graphics.beginFill(color).drawCircle(0, 0, 50);
+
+            if(color == "red") {
+                circle.x = 100;
+            }
+            else {
+                circle.x = 250;
+            }
+            circle.y = index * 150 - 50;
+            circle.addEventListener("click", handleClick);
+
+            stage.addChild(circle);
+            stage.update();
         }
 
         function handleLoad(event) {
-            stage = new createjs.Stage("demoCanvas");
-            circle1 = new createjs.Shape();
-            circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
-            circle1.x = 100;
-            circle1.y = 100;
-            circle1.on("click", function() {
-                alert("clicked");
-            });
+//            stage = new createjs.Stage("demoCanvas");
+//            circle1 = new createjs.Shape();
+//            circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
+//            circle1.x = 100;
+//            circle1.y = 100;
+//            circle1.on("click", function() {
+//                alert("clicked");
+//            });
             //circle1.addEventListener("click", handleClick);
-            stage.addChild(circle1);
+//            stage.addChild(circle1);
 
 //            circle2 = new createjs.Shape();
 //            circle2.graphics.beginFill("blue").drawCircle(0, 0, 50);
@@ -40,21 +71,38 @@
             //circle2.addEventListener("click", handleClick2);
             //stage.addChild(circle2);
 
-            sound = "start";
-            stage.update();
+//            sound = "start";
+//            stage.update();
         }
 
         function handleClick(event) {
-            console.log(sound);
-            if(sound == "note1") {
-                circle1.graphics.beginFill("green").drawCircle(0, 0, 50);
+            console.log(event.target.name);
+            switch(event.target.name) {
+                case "lCircle1":
+                case "rCircle1":
+                    createjs.Sound.play("note1");
+                    break;
+                case "rCircle2":
+                case "lCircle2":
+                    createjs.Sound.play("note2");
+                    break;
             }
-            else {
-                circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
+
+            if(sound == event.target.name) {
+                event.target.graphics.beginFill("green").drawCircle(0, 0, 50);
             }
-            createjs.Sound.play("note1");
-            sound = "note1";
-            //stage.update();
+            sound = event.target.name;
+
+//            console.log(sound);
+//            if(sound == "note1") {
+//                circle1.graphics.beginFill("green").drawCircle(0, 0, 50);
+//            }
+//            else {
+//                circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
+//            }
+//            createjs.Sound.play("note1");
+//            sound = "note1";
+            stage.update();
         }
 
         function handleClick2(event) {
