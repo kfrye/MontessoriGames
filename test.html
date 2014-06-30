@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
     <script>
-        var sound;
         var stage;
         var rCircle = new Array();
         var lCircle = new Array();
-        var rCircle1, rCircle2;
-        var lCircle1, lCircle2;
+        var num = 2;
+
+        function Button(color, sound) {
+            this.shape = new createjs.Shape();
+            this.color = color;
+            this.sound = "note"+(sound+1);
+        }
+
+        var lastSound = {
+            color: "start",
+            sound: 0
+        };
 
         function init() {
             if (!createjs.Sound.initializeDefaultPlugins()) {return;}
@@ -18,91 +27,64 @@
                 {id:"note1", src:"note1.mp3"},
                 {id:"note2", src:"note2.mp3"}
             ];
+            var redArray = new Array();
+            var blueArray = new Array();
 
             createjs.Sound.addEventListener("fileload", handleLoad);
             createjs.Sound.registerManifest(manifest, audioPath);
             stage = new createjs.Stage("demoCanvas");
 
-            for(i=1; i<=2; i++) {
-                rCircle[i] = new createjs.Shape();
-                rCircle[i].name = "rCircle" + i;
-                lCircle[i] = new createjs.Shape();
-                lCircle[i].name = "lCircle" + i;
+            // initialize the arrays
+            for(var i=0; i<num; i++) {
+                redArray[i] = i;
+                blueArray[i] = i;
+            }
 
-                drawCircle(rCircle[i], "red", i);
-                drawCircle(lCircle[i], "blue", i);
+            Shuffle(redArray);
+            Shuffle(blueArray);
+
+            for(i=0; i < num; i++) {
+                rCircle[i] = new Button("red", redArray[i]);
+                lCircle[i] = new Button("blue", blueArray[i]);
+                drawCircle(lCircle[i], i);
+                drawCircle(rCircle[i], i);
             }
         }
 
-        function drawCircle(circle, color, index) {
+        function drawCircle(circle, index) {
 
-            console.log(circle.name+" "+color);
-            circle.graphics.beginFill(color).drawCircle(0, 0, 50);
+            console.log(circle.color+" "+index);
+            circle.shape.graphics.beginFill(circle.color).drawCircle(0, 0, 50);
 
-            if(color == "red") {
-                circle.x = 100;
+            if(circle.color == "red") {
+                circle.shape.x = 100;
             }
             else {
-                circle.x = 250;
+                circle.shape.x = 250;
             }
-            circle.y = index * 150 - 50;
-            circle.addEventListener("click", handleClick);
+            circle.shape.y = (index + 1) * 150 - 50;
+            circle.shape.on("click", handleClick, null, false, [circle.color, circle.sound] );
 
-            stage.addChild(circle);
+            stage.addChild(circle.shape);
             stage.update();
         }
 
         function handleLoad(event) {
-//            stage = new createjs.Stage("demoCanvas");
-//            circle1 = new createjs.Shape();
-//            circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
-//            circle1.x = 100;
-//            circle1.y = 100;
-//            circle1.on("click", function() {
-//                alert("clicked");
-//            });
-            //circle1.addEventListener("click", handleClick);
-//            stage.addChild(circle1);
-
-//            circle2 = new createjs.Shape();
-//            circle2.graphics.beginFill("blue").drawCircle(0, 0, 50);
-//            circl/e2.x = circle1.x;
-//            circle2.y = circle1.y + 150;
-            //circle2.addEventListener("click", handleClick2);
-            //stage.addChild(circle2);
-
-//            sound = "start";
-//            stage.update();
         }
 
-        function handleClick(event) {
-            console.log(event.target.name);
-            switch(event.target.name) {
-                case "lCircle1":
-                case "rCircle1":
-                    createjs.Sound.play("note1");
-                    break;
-                case "rCircle2":
-                case "lCircle2":
-                    createjs.Sound.play("note2");
-                    break;
-            }
+        function handleClick(event, data) {
+            var color = data[0];
+            var sound = data[1];
+            console.log(color+" "+sound);
 
-            if(sound == event.target.name) {
-                event.target.graphics.beginFill("green").drawCircle(0, 0, 50);
+            if(color != lastSound["color"]) {
+                if(sound === lastSound["sound"]) {
+                    console.log("Successful match!");
+                }
             }
-            sound = event.target.name;
-
-//            console.log(sound);
-//            if(sound == "note1") {
-//                circle1.graphics.beginFill("green").drawCircle(0, 0, 50);
-//            }
-//            else {
-//                circle1.graphics.beginFill("red").drawCircle(0, 0, 50);
-//            }
-//            createjs.Sound.play("note1");
-//            sound = "note1";
-            stage.update();
+            createjs.Sound.play(sound);
+            lastSound["color"] = color;
+            lastSound["sound"] = sound;
         }
 
         function handleClick2(event) {
@@ -117,6 +99,12 @@
             sound = "note2";
             stage.update();
         }
+
+        function Shuffle(o) {
+            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+            return o;
+        }
+
     </script>
 </head>
 <body onLoad="init();">
