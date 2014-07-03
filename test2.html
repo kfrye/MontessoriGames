@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag and drop the shapes</title>
+
+    <script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script>
+
+        var stageWidth = 640;
+        var stageHeight = 480;
+        var stage;
+        var circles = new Array();
+        var num = 8;
+
+        function Button(sound) {
+            this.shape = new createjs.Shape();
+            this.sound = "note"+(sound+1);
+            this.shape.name = this.sound;
+            this.number = sound;
+        }
+
+        function init(){
+            if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+
+            var audioPath = "res/";
+            var manifest = [
+                {id:"note1", src:"note1.mp3"},
+                {id:"note2", src:"note2.mp3"},
+                {id:"note3", src:"note3.mp3"},
+                {id:"note4", src:"note4.mp3"},
+                {id:"note5", src:"note5.mp3"},
+                {id:"note6", src:"note6.mp3"},
+                {id:"note7", src:"note7.mp3"},
+                {id:"note8", src:"note8.mp3"}
+            ];
+            var ordering = new Array();
+            var colors = [ "red", "orange", "yellow", "green", "blue", "violet", "purple", "pink"];
+            createjs.Sound.addEventListener("fileload", handleLoad);
+            createjs.Sound.registerManifest(manifest, audioPath);
+            stage = new createjs.Stage("canvas");
+            stage.enableMouseOver();
+
+            // initialize the arrays
+            for(var i=0; i<num; i++) {
+                ordering[i] = i;
+            }
+
+            Shuffle(ordering);
+
+            for(i=0; i < num; i++) {
+                circles[i] = new Button(ordering[i]);
+                drawCircle(circles[i], colors[i], i);
+            }
+
+            //draw to the canvas
+            stage.update();
+            createjs.Ticker.addEventListener("tick", stage);
+        }
+
+        function drawCircle(circle, color, index) {
+
+            console.log(index);
+            circle.shape.graphics.beginFill(color).drawCircle(0, 0, 30);
+
+            circle.shape.x = (index + 1) * 70 - 25;
+            circle.shape.y = 75;
+            circle.shape.on("pressmove", pressHandler, null, false, circle.sound );
+            circle.shape.on("pressup", pressUpHandler);
+            circle.shape.on("click", clickHandler, null, false, circle.sound);
+            stage.addChild(circle.shape);
+            stage.update();
+        }
+
+        function pressHandler(evt, sound){
+            evt.target.x = evt.stageX;
+            evt.target.y = evt.stageY;
+        }
+
+        function clickHandler(event, sound) {
+            createjs.Sound.play(sound);
+        }
+
+        function Shuffle(o) {
+            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+            return o;
+        }
+
+        function pressUpHandler(event) {
+            circles.sort(function(a, b) { return a.shape.x - b.shape.x});
+            positionCircles(circles);
+        }
+
+        function positionCircles(myArray) {
+            var length = myArray.length;
+
+            for(var i = 0; i < length; i++) {
+                var posX = (i + 1) * 70 - 25;
+                var posY = 75;
+                var myTween = createjs.Tween.get(myArray[i].shape).to({x:posX},250).to({y:posY}, 250);
+            }
+            if(checkSuccess(myArray))
+                console.log("Success!")
+        }
+
+        function checkSuccess(myArray) {
+            var length = myArray.length;
+
+            for(var i = 0; i < length; i++) {
+                if(myArray[i].number != num - i - 1)
+                    return false;
+            }
+            return true;
+        }
+
+        function handleLoad(event) {
+
+        }
+
+    </script>
+
+</head>
+
+<body onload="init()">
+<canvas id="canvas" width="640" height="480"></canvas>
+</body>
+</html>
