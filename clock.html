@@ -7,79 +7,87 @@
 
     <script>
         var stage, cont, min, hr, sec;
+        var stageWidth = 640;
+        var stageHeight = 480;
+        var clockRadius = 150;
 
         function init() {
             stage = new createjs.Stage("demo"); // points to the canvas element in html body
-
             cont = stage.addChild(new createjs.Container()); // container to hold the clock
-            cont.x = cont.y = 250; // center the container
+            cont.x = stage.canvas.width/2;
+            cont.y = stage.canvas.height/2; // center the container
 
-// create the clock minute markers
-            for(deg = 0; deg <= 360; deg+= 6) { // rotate to create 60 markers
-                var radius = 1; // default size of markers
-                if (deg % 30 == 0) radius = 2; // bigger ones for 5, 10, 15, ... minutes
-                if (deg % 90 == 0) radius = 5; // even bigger markers for 15, 30, 45, 60 mins
-
-                var s1 = new createjs.Shape();
-                s1.graphics
-                        .beginFill("black").drawCircle(150,0,radius);
-
-                s1.rotation = deg; // draw markers for all 60 minutes
-
-                cont.addChild(s1);
+            // create the clock minute markers
+            for(deg = 0; deg <= 360; deg+= 6) {
+                var marker = new createjs.Shape();
+                marker.graphics.beginFill("black").drawCircle(clockRadius,0,1);
+                marker.rotation = deg; // draw markers for all 60 minutes
+                cont.addChild(marker);
             }
 
-// the minute hand
+            // the minute hand
             min = new createjs.Shape();
             min.graphics
-                    .beginFill("black").drawRect(0,0, 135,3);
+                    .beginFill("black").drawRect(0,0, 135,5);
             min.on("pressmove", clickHandler, null, false, "min");
             cont.addChild(min);
 
-// the hour hand
+            // the hour hand
             hr = new createjs.Shape();
             hr.graphics
-                    .beginFill("black").drawRect(0,0, 75,5);
-            //hr.on("pressmove", clickHandler, null, false, "hour");
+                    .beginFill("black").drawRect(0,0, 75,7);
+            hr.on("pressmove", clickHandler, null, false, "hour");
             cont.addChild(hr);
-            // onFrame will be called each "tick". Default is 50ms, or 20FPS
-            //createjs.Ticker.addEventListener("tick", onFrame);
+            drawNumbers();
             stage.update();
         }
 
+        function drawNumbers(){
+            var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
+
+            function toRadians (angle) {
+                return angle * (Math.PI / 180);
+            }
+
+            function place_numbers(number){
+                var placement=((number%12/12)*360);
+                var text=new createjs.Text(number.toString(),"25px Arial","#000");
+                text.textBaseline="middle";
+                text.textAlign="center";
+                text.x=stage.canvas.width/2;
+                text.y=stage.canvas.height/2;
+                var r=170;
+                var x=r*Math.sin(toRadians(placement));
+                var y=r*Math.cos(toRadians(placement));
+                console.log(number,placement,x,y);
+                text.regX=-x;
+                text.regY=y;
+                stage.addChild(text);
+                stage.update();
+            }
+
+            for (num in numbers)
+                place_numbers(numbers[num]);
+        }
+
         function clickHandler(event) {
-            //var obj = hr;
-//            if(name == "hour") {
-//                obj = hr;
-//            }
-//            else {
-//                obj = min;
-//            }
-            var dx = stage.mouseX - hr.x;
-            var dy = stage.mouseY - hr.y;
+            var dx = stage.mouseX - cont.x;
+            var dy = stage.mouseY - cont.y;
             var angle = Math.atan2(dy, dx);
 
             angle = angle * (180/Math.PI);
-
-            // The following if statement is optional and converts our angle from being
-            // -180 to +180 degrees to 0-360 degrees.  It is completely optional
             if(angle < 0)
             {
                 angle = 360 - (-angle);
             }
-            console.log(angle);
-            // Atan2 results have 0 degrees point down the positive X axis, while our image is pointed up.
-            // Therefore we simply add 90 degrees to the rotation to orient our image
-            // If 0 degrees is to the right on your image, you do not need to add 90
-            hr.rotation =angle + 90;
-
+            event.target.rotation = angle;
             stage.update();
         }
 
     </script>
 </head>
 <body onLoad="init();">
-<canvas id="demo" width="500" height="500">
+<canvas id="demo" width="480" height="640">
 </canvas>
 </body>
 </html>
