@@ -10,6 +10,8 @@
         var stageWidth = 640;
         var stageHeight = 480;
         var clockRadius = 150;
+        var label;
+        var clock;
 
         function ClockNumber(hour, min) {
             this.hour = hour;
@@ -53,6 +55,13 @@
             button.y = 20;
             button.on("click", buttonClick); 
             stage.addChild(button);
+
+            // Add a randomly generated time to the screen
+            clock = generateTime();
+            label = new createjs.Text(clock.hour + ":" + clock.min);
+            label.x = 30;
+            label.y = 50;
+            stage.addChild(label);
  
             stage.update();
         }
@@ -63,9 +72,25 @@
             console.log("Hour angle: " + hourDeg + " Min angle: "+minDeg);
             var hourNum = determineClockNumber(hourDeg);
             var minNum = determineClockNumber(minDeg);
-            console.log("Hour: " + hourNum + " Min: " + minNum); 
-            var clock = generateTime();
+            if(minNum == 12)
+               minNum = 0;
+            else
+               minNum = minNum * 5;
+            console.log("Hour: " + hourNum + " Min: " + minNum);
+            if(minNum == clock.min) {
+                if(clock.min == 15 && 
+                    (clock.hour == hourNum || clock.hour == hourNum))
+                    console.log("You win!");
+                else if(clock.min == 30 && clock.hour == hourNum)
+                    console.log("You win!");
+                else if(clock.min == 45 &&
+                    (clock.hour == hourNum + 1 || clock.hour == hourNum)) 
+                    console.log("You win!");
+            }
+            else
+                console.log("try again"); 
         } 
+  
 
         function drawNumbers(){
             var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
@@ -124,21 +149,14 @@
             var num = degree/30 + 3;
             var frac = num % 1;
 
-            if(frac < .2) 
+            if(frac < .25) {
                 num -= frac;
-            else if(frac >= .2 && frac <= .3) {
-                num -= frac;
-                num += .25;
             }
-            else if(frac > .3 && frac < .7) {
+            else if(frac >= .25 && frac < .75) {
                 num -= frac;
                 num += .5;
             }
-            else if(frac >= .7 && frac <= .8) {
-                num -= frac;
-                num += .75;
-            }
-            else if(frac > .8) {
+            else if(frac >= .75) {
                 num -= frac;
                 num++;
             }
@@ -146,7 +164,8 @@
                 num -= 12;
             return num;
         }
-       
+
+        // Generate a random time and return a ClockNumber object       
         function generateTime() {
             var hour = Math.floor((Math.random() * 12) + 1);
             var minArray = [0, 15, 30, 45];
