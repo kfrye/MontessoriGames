@@ -80,8 +80,13 @@
             {
                 angle = 360 - (-angle);
             }
+            console.log(angle);
             event.target.rotation = angle;
             stage.update();
+        }
+
+        function determineClockNumber(degree) {
+            var number = degree/30 + 3;
         }
 
     </script>
