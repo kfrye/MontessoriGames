@@ -11,6 +11,11 @@
         var stageHeight = 480;
         var clockRadius = 150;
 
+        function ClockNumber(hour, min) {
+            this.hour = hour;
+            this.min = min;
+        }
+
         function init() {
             stage = new createjs.Stage("demo"); // points to the canvas element in html body
             cont = stage.addChild(new createjs.Container()); // container to hold the clock
@@ -27,20 +32,40 @@
 
             // the minute hand
             min = new createjs.Shape();
-            min.graphics
-                    .beginFill("black").drawRect(0,0, 135,5);
+            min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 5);
             min.on("pressmove", clickHandler, null, false, "min");
             cont.addChild(min);
+            min.rotation = 315;
+            console.log(min.rotation);
 
             // the hour hand
             hr = new createjs.Shape();
-            hr.graphics
-                    .beginFill("black").drawRect(0,0, 75,7);
+            hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 7);
             hr.on("pressmove", clickHandler, null, false, "hour");
             cont.addChild(hr);
+            hr.rotation = 225;
             drawNumbers();
+
+            // Add button for testing purposes
+            button = new createjs.Shape();
+            button.graphics.beginFill("red").drawCircle(0, 0, 20);
+            button.x = 20;
+            button.y = 20;
+            button.on("click", buttonClick); 
+            stage.addChild(button);
+ 
             stage.update();
         }
+
+        function buttonClick(event) {
+            var hourDeg = hr.rotation;
+            var minDeg = min.rotation;
+            console.log("Hour angle: " + hourDeg + " Min angle: "+minDeg);
+            var hourNum = determineClockNumber(hourDeg);
+            var minNum = determineClockNumber(minDeg);
+            console.log("Hour: " + hourNum + " Min: " + minNum); 
+            var clock = generateTime();
+        } 
 
         function drawNumbers(){
             var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
@@ -73,22 +98,64 @@
         function clickHandler(event) {
             var dx = stage.mouseX - cont.x;
             var dy = stage.mouseY - cont.y;
-            var angle = Math.atan2(dy, dx);
+            var angle = getAngle(dx, dy); 
+            var clockNum = determineClockNumber(angle);
 
+            console.log("Angle: " + angle + " clock num: " + clockNum);
+            event.target.rotation = angle;
+
+            stage.update();
+        }
+
+        // Get the angle of rotation for the given x,y coordinants relative
+        // to the x-axis
+        function getAngle(x, y) {
+            var angle = Math.atan2(y, x);
             angle = angle * (180/Math.PI);
             if(angle < 0)
             {
                 angle = 360 - (-angle);
             }
-            console.log(angle);
-            event.target.rotation = angle;
-            stage.update();
+            return angle;
         }
 
+        // Given an angle (in degrees), find the clock number 
         function determineClockNumber(degree) {
-            var number = degree/30 + 3;
-        }
+            var num = degree/30 + 3;
+            var frac = num % 1;
 
+            if(frac < .2) 
+                num -= frac;
+            else if(frac >= .2 && frac <= .3) {
+                num -= frac;
+                num += .25;
+            }
+            else if(frac > .3 && frac < .7) {
+                num -= frac;
+                num += .5;
+            }
+            else if(frac >= .7 && frac <= .8) {
+                num -= frac;
+                num += .75;
+            }
+            else if(frac > .8) {
+                num -= frac;
+                num++;
+            }
+            if(num > 12.5)
+                num -= 12;
+            return num;
+        }
+       
+        function generateTime() {
+            var hour = Math.floor((Math.random() * 12) + 1);
+            var minArray = [0, 15, 30, 45];
+            var minIndex = Math.floor((Math.random() * 4));
+            var min = minArray[minIndex];
+            var clock = new ClockNumber(hour, min);
+            console.log(hour + ":" + min);
+            return clock;
+        }
     </script>
 </head>
 <body onLoad="init();">
