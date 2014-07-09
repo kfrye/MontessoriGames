@@ -77,7 +77,7 @@
         }
 
         function clickHandler(event, sound) {
-            createjs.Sound.play(sound);
+            createjs.Sound.play("note1");
         }
 
         function Shuffle(o) {
@@ -106,7 +106,7 @@
             var length = myArray.length;
 
             for(var i = 0; i < length; i++) {
-                if(myArray[i].number != num - i - 1)
+                if(myArray[i].number != i)
                     return false;
             }
             return true;
