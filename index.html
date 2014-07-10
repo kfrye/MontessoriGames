@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
     <script>
         var stage;
         var rCircle = new Array();
@@ -126,12 +126,12 @@
             label.y = 60/2;
 
             var button = new createjs.Container();
-            submitButton.name = "button";
-            submitButton.x = 20;
-            submitButton.y = 20;
-            submitButton.addChild(background, label);
+            button.name = "button";
+            button.x = 20;
+            button.y = 20;
+            button.addChild(background, label);
 
-            stage.addChild(submitButton);
+            stage.addChild(button);
         }
 
     </script>
