@@ -11,13 +11,10 @@
         var stageHeight = 480;
         var clockRadius = 150;
         var buttonWidth = 150;
+        var buttonHeight = 40;
         var timeLabel;
-        var clock;
-
-        function ClockNumber(hour, min) {
-            this.hour = hour;
-            this.min = min;
-        }
+        var time;
+        var statusLabel;
 
         function init() {
             stage = new createjs.Stage("demo"); // points to the canvas element in html body
@@ -26,20 +23,26 @@
             createSubmitButton();
             createNewClockButton();
 
+            // Add instructions for the game to the top of the screen
             var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");
-            var b = instructions.getBounds();
-            instructions.x = stage.canvas.width/2 - b.width/2;
+            instructions.x = centerText(instructions);
             instructions.y = 20;
             stage.addChild(instructions);
 
             // Add a randomly generated time to the screen
-            clock = generateTime();
-            timeLabel = new createjs.Text(clock.hour + ":" + clock.min, "bold 30px Arial", "#CC3300" );
-            b = timeLabel.getBounds();
-            timeLabel.x = stage.canvas.width/2 - b.width/2;
+            time = new Object();
+            time = generateTime(time);
+            timeLabel = new createjs.Text(time.hour + ":" + time.min, "bold 50px Arial", "#CC3300" );
+            timeLabel.x = centerText(timeLabel);
             timeLabel.y = 60;
             stage.addChild(timeLabel);
- 
+
+            // Add a status message to the bottom of the screen
+            statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");
+            statusLabel.text = "Beginning status";
+            statusLabel.x = centerText(statusLabel);
+            statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
+            stage.addChild(statusLabel);
             stage.update();
         }
 
@@ -60,18 +63,44 @@
             // Add clock minute hand
             min = new createjs.Shape();
             min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 5);
-            min.on("pressmove", clickHandler);
+            min.on("pressmove", clockHandPressMoveHandler);
             clockContainer.addChild(min);
-            min.rotation = 315; // starting position for the minute hand
             console.log(min.rotation);
 
             // Add clock hour hand
             hr = new createjs.Shape();
             hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 7);
-            hr.on("pressmove", clickHandler);
+            hr.on("pressmove", clockHandPressMoveHandler);
             clockContainer.addChild(hr);
-            hr.rotation = 225; // starting position for the hour hand
             drawNumbers();
+            initializeHands();
+        }
+
+        // Add numbers to the clock
+        function drawNumbers(){
+            var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
+
+            function toRadians (angle) {
+                return angle * (Math.PI / 180);
+            }
+
+            function placeNumbers(number){
+                var placement=((number%12/12)*360);
+                var text=new createjs.Text(number.toString(),"25px Arial");
+                text.textBaseline="middle";
+                text.textAlign="center";
+                text.x=stage.canvas.width/2;
+                text.y=stage.canvas.height/2;
+                var r=clockRadius + 20;
+                var x=r*Math.sin(toRadians(placement));
+                var y=r*Math.cos(toRadians(placement));
+                text.regX=-x;
+                text.regY=y;
+                stage.addChild(text);
+            }
+
+            for (num in numbers)
+                placeNumbers(numbers[num]);
         }
 
         // Add the submit button to the canvas
@@ -82,7 +111,7 @@
             stage.addChild(submitContainer);
 
             var submitButton = new createjs.Shape();
-            submitButton.graphics.beginFill("#0066CC").drawRoundRect(0,0, buttonWidth, 40, 2 );
+            submitButton.graphics.beginFill("#0066CC").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
             submitButton.on("click", submitButtonClickHandler);
             submitContainer.addChild(submitButton);
 
@@ -102,7 +131,7 @@
             stage.addChild(newClockContainer);
 
             var newClockButton = new createjs.Shape();
-            newClockButton.graphics.beginFill("#CC3300").drawRoundRect(0,0, buttonWidth, 40, 2 );
+            newClockButton.graphics.beginFill("#CC3300").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
             newClockButton.on("click", newClockButtonClickHandler);
             newClockContainer.addChild(newClockButton);
 
@@ -114,67 +143,58 @@
             newClockContainer.addChild(newClockText);
         }
 
+        // Handle click event from the Submit button
         function submitButtonClickHandler(event) {
+            // Get the angle of the clock hands
             var hourDeg = hr.rotation;
             var minDeg = min.rotation;
             console.log("Hour angle: " + hourDeg + " Min angle: "+minDeg);
+
+            // Get the corresponding clock numbers
             var hourNum = determineClockNumber(hourDeg);
             var minNum = determineClockNumber(minDeg);
+
+            // Translate numbers to the corresponding time
             if(minNum == 12)
                minNum = 0;
             else
                minNum = minNum * 5;
             console.log("Hour: " + hourNum + " Min: " + minNum);
-            if(minNum == clock.min) {
-                if(clock.min == 0 && clock.hour == hourNum)
-                    console.log("You win!");
-                else if(clock.min == 15 &&
-                    (clock.hour == hourNum || clock.hour == hourNum))
-                    console.log("You win!");
-                else if(clock.min == 30 &&
-                        (clock.hour == hourNum || clock.hour +.5 == hourNum))
-                    console.log("You win!");
-                else if(clock.min == 45 &&
-                    (clock.hour == (hourNum + 1) % 12 || clock.hour == hourNum))
-                    console.log("You win!");
+
+            // Check for success
+            if(minNum == time.min &&
+                // Check if hour is correct. Several variations are possible
+                ((time.min == 0 && time.hour == hourNum) ||
+                (time.min == 15 &&
+                    (time.hour == hourNum || time.hour == hourNum)) ||
+                (time.min == 30 &&
+                    (time.hour == hourNum || time.hour +.5 == hourNum)) ||
+                (time.min == 45 &&
+                    (time.hour == (hourNum + 1) % 12 || time.hour == hourNum ||
+                     time.hour == hourNum -.5 )))) {
+                statusLabel.text = "Correct!";
+                statusLabel.x = centerText(statusLabel);
             }
-            else
-                console.log("try again"); 
+            else {
+                statusLabel.text = "Try Again!";
+                statusLabel.x = centerText(statusLabel);
+            }
+            stage.update();
         } 
-  
+
+        // Handle click event to the New Clock button
         function newClockButtonClickHandler(event) {
-
+            generateTime(time);
+            timeLabel.text = time.hour + ":" + time.min;
+            timeLabel.x = centerText(timeLabel);
+            statusLabel.text = "";
+            initializeHands();
+            stage.update();
         }
 
-        function drawNumbers(){
-            var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
-
-            function toRadians (angle) {
-                return angle * (Math.PI / 180);
-            }
-
-            function place_numbers(number){
-                var placement=((number%12/12)*360);
-                var text=new createjs.Text(number.toString(),"25px Arial","#000");
-                text.textBaseline="middle";
-                text.textAlign="center";
-                text.x=stage.canvas.width/2;
-                text.y=stage.canvas.height/2;
-                var r=170;
-                var x=r*Math.sin(toRadians(placement));
-                var y=r*Math.cos(toRadians(placement));
-                console.log(number,placement,x,y);
-                text.regX=-x;
-                text.regY=y;
-                stage.addChild(text);
-                stage.update();
-            }
-
-            for (num in numbers)
-                place_numbers(numbers[num]);
-        }
-
-        function clickHandler(event) {
+        // Move the hands on the clock when the user clicks and holds the mouse down
+        function clockHandPressMoveHandler(event) {
+            statusLabel.text = "";
             var dx = stage.mouseX - clockContainer.x;
             var dy = stage.mouseY - clockContainer.y;
             var angle = getAngle(dx, dy); 
@@ -182,11 +202,10 @@
 
             console.log("Angle: " + angle + " clock num: " + clockNum);
             event.target.rotation = angle;
-
             stage.update();
         }
 
-        // Get the angle of rotation for the given x,y coordinants relative
+        // Get the angle of rotation for the given x,y coordinates relative
         // to the x-axis
         function getAngle(x, y) {
             var angle = Math.atan2(y, x);
@@ -219,15 +238,30 @@
             return num;
         }
 
-        // Generate a random time and return a ClockNumber object       
-        function generateTime() {
+        // Generate a random time and return an object containing it
+        function generateTime(clock) {
             var hour = Math.floor((Math.random() * 12) + 1);
-            var minArray = [00, 15, 30, 45];
+            var minArray = ["00", "15", "30", "45"];
             var minIndex = Math.floor((Math.random() * 4));
             var min = minArray[minIndex];
-            var clock = new ClockNumber(hour, min);
+            clock.hour = hour;
+            clock.min = min;
             console.log(hour + ":" + min);
             return clock;
+        }
+
+        // Find the appropriate x coordinate for a label
+        function centerText(label) {
+            var b = label.getBounds();
+            var x = stage.canvas.width/2 - b.width/2;
+            return x;
+        }
+
+        // Set the clock hands to a beginning position (10:10)
+        function initializeHands() {
+            hr.rotation = 210;
+            min.rotation = 330;
+            stage.update();
         }
     </script>
 </head>
