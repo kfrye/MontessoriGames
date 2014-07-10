@@ -4,8 +4,8 @@
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
     <script>
         var stage;
-        var rCircle = new Array();
-        var lCircle = new Array();
+        var rCircle = [];
+        var lCircle = [];
         var num = 5;
         var match = 0;
 
@@ -32,8 +32,8 @@
                 {id:"note4", src:"note4.mp3"},
                 {id:"note5", src:"note5.mp3"}
             ];
-            var redArray = new Array();
-            var blueArray = new Array();
+            var redArray = [];
+            var blueArray = [];
 
             createjs.Sound.addEventListener("fileload", handleLoad);
             createjs.Sound.registerManifest(manifest, audioPath);
@@ -106,6 +106,7 @@
             stage.update();
         }
 
+        // Shuffle the members of an array into a random order
         function Shuffle(o) {
             for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
             return o;

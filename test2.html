@@ -3,13 +3,13 @@
 <head>
     <title>Drag and drop the shapes</title>
 
-    <script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
     <script>
 
         var stageWidth = 640;
         var stageHeight = 480;
         var stage;
-        var circles = new Array();
+        var circles = [];
         var num = 8;
 
         function Button(sound) {
@@ -19,7 +19,7 @@
             this.number = sound;
         }
 
-        function init(){
+        function init() {
             if (!createjs.Sound.initializeDefaultPlugins()) {return;}
 
             var audioPath = "res/";
@@ -33,7 +33,7 @@
                 {id:"note7", src:"note7.mp3"},
                 {id:"note8", src:"note8.mp3"}
             ];
-            var ordering = new Array();
+            var ordering = [];
             var colors = [ "red", "orange", "yellow", "green", "blue", "violet", "purple", "pink"];
             createjs.Sound.addEventListener("fileload", handleLoad);
             createjs.Sound.registerManifest(manifest, audioPath);
@@ -64,14 +64,14 @@
 
             circle.shape.x = (index + 1) * 70 - 25;
             circle.shape.y = 75;
-            circle.shape.on("pressmove", pressHandler, null, false, circle.sound );
+            circle.shape.on("pressmove", pressHandler);
             circle.shape.on("pressup", pressUpHandler);
             circle.shape.on("click", clickHandler, null, false, circle.sound);
             stage.addChild(circle.shape);
             stage.update();
         }
 
-        function pressHandler(evt, sound){
+        function pressHandler(evt){
             evt.target.x = evt.stageX;
             evt.target.y = evt.stageY;
         }
@@ -85,7 +85,7 @@
             return o;
         }
 
-        function pressUpHandler(event) {
+        function pressUpHandler() {
             circles.sort(function(a, b) { return a.shape.x - b.shape.x});
             positionCircles(circles);
         }
@@ -96,7 +96,7 @@
             for(var i = 0; i < length; i++) {
                 var posX = (i + 1) * 70 - 25;
                 var posY = 75;
-                var myTween = createjs.Tween.get(myArray[i].shape).to({x:posX},250).to({y:posY}, 250);
+                createjs.Tween.get(myArray[i].shape).to({x:posX},250).to({y:posY}, 250);
             }
             if(checkSuccess(myArray))
                 console.log("Success!")

@@ -30,7 +30,7 @@
             stage.addChild(instructions);
 
             // Add a randomly generated time to the screen
-            time = new Object();
+            time = {};
             time = generateTime(time);
             timeLabel = new createjs.Text(time.hour + ":" + time.min, "bold 50px Arial", "#CC3300" );
             timeLabel.x = centerText(timeLabel);
@@ -53,7 +53,7 @@
             clockContainer.y = stage.canvas.height/2;
 
             // Add clock minute markers
-            for(deg = 0; deg <= 360; deg+= 6) {
+            for(var deg = 0; deg <= 360; deg+= 6) {
                 var marker = new createjs.Shape();
                 marker.graphics.beginFill("black").drawCircle(clockRadius,0,1);
                 marker.rotation = deg;
@@ -99,7 +99,7 @@
                 stage.addChild(text);
             }
 
-            for (num in numbers)
+            for (var num in numbers)
                 placeNumbers(numbers[num]);
         }
 
@@ -144,7 +144,7 @@
         }
 
         // Handle click event from the Submit button
-        function submitButtonClickHandler(event) {
+        function submitButtonClickHandler() {
             // Get the angle of the clock hands
             var hourDeg = hr.rotation;
             var minDeg = min.rotation;
@@ -183,7 +183,7 @@
         } 
 
         // Handle click event to the New Clock button
-        function newClockButtonClickHandler(event) {
+        function newClockButtonClickHandler() {
             generateTime(time);
             timeLabel.text = time.hour + ":" + time.min;
             timeLabel.x = centerText(timeLabel);
@@ -220,17 +220,17 @@
         // Given an angle (in degrees), find the clock number 
         function determineClockNumber(degree) {
             var num = degree/30 + 3;
-            var frac = num % 1;
+            var fraction = num % 1;
 
-            if(frac < .25) {
-                num -= frac;
+            if(fraction < .25) {
+                num -= fraction;
             }
-            else if(frac >= .25 && frac < .75) {
-                num -= frac;
+            else if(fraction >= .25 && fraction < .75) {
+                num -= fraction;
                 num += .5;
             }
-            else if(frac >= .75) {
-                num -= frac;
+            else if(fraction >= .75) {
+                num -= fraction;
                 num++;
             }
             if(num > 12.5)
