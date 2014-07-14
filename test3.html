@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script>
+        var sound;
+        var stage;
+        var circle;
+
+        function init() {
+            if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+
+            var audioPath = "res/";
+            var manifest = [
+                {id:"note1", src:"note1.mp3"},
+                {id:"note2", src:"note2.mp3"}
+            ];
+
+            createjs.Sound.addEventListener("fileload", handleLoad);
+            createjs.Sound.registerManifest(manifest, audioPath);
+
+            drawCircle();
+        }
+
+        function handleLoad(event) {
+
+        }
+
+        function drawCircle() {
+            stage = new createjs.Stage("demoCanvas");
+            circle = new createjs.Shape();
+            circle.graphics.beginFill("red").drawCircle(0, 0, 50);
+            circle.x = 100;
+            circle.y = 100;
+
+            circle.addEventListener("click", handleClick);
+
+            stage.addChild(circle);
+            stage.update();
+        }
+
+        function handleClick(event) {
+            console.log(sound);
+            if(sound == "note1") {
+                circle.graphics.beginFill("green").drawCircle(0, 0, 50);
+            }
+            else {
+                circle.graphics.beginFill("red").drawCircle(0, 0, 50);
+            }
+            createjs.Sound.play("note1");
+            sound = "note1";
+            stage.update();
+        }
+    </script>
+</head>
+<body onLoad="init();">
+<canvas id="demoCanvas" width="500" height="300">
+    alternate content
+</canvas>
+</body>
+</html>

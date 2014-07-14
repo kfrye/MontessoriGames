@@ -1,144 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+
     <script>
         var stage;
-        var rCircle = [];
-        var lCircle = [];
-        var num = 5;
-        var match = 0;
-
-        function Button(color, sound) {
-            this.shape = new createjs.Shape();
-            this.color = color;
-            this.sound = "note"+(sound+1);
-            this.shape.name = this.color+this.sound;
-        }
-
-        var lastSound = {
-            color: "start",
-            sound: 0
-        };
+        var buttonWidth = 250;
+        var buttonHeight = 40;
 
         function init() {
-            if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+            stage = new createjs.Stage("canvas");
 
-            var audioPath = "res/";
-            var manifest = [
-                {id:"note1", src:"note1.mp3"},
-                {id:"note2", src:"note2.mp3"},
-                {id:"note3", src:"note3.mp3"},
-                {id:"note4", src:"note4.mp3"},
-                {id:"note5", src:"note5.mp3"}
-            ];
-            var redArray = [];
-            var blueArray = [];
+            // Match Sounds Game
+            var match = new createButton("Match Sounds", "#6600FF", buttonWidth, buttonHeight);
+            match.x = stage.canvas.width/2 - buttonWidth/2;
+            match.y = 20;
+            match.addEventListener("click", function() {
+                window.location = "match.html";
+            });
+            stage.addChild(match);
 
-            createjs.Sound.addEventListener("fileload", handleLoad);
-            createjs.Sound.registerManifest(manifest, audioPath);
-            stage = new createjs.Stage("demoCanvas");
+            // Sort sounds game
+            var sort = new createButton("Sort Sounds", "#993300", buttonWidth, buttonHeight);
+            sort.x = stage.canvas.width/2 - buttonWidth/2;
+            sort.y = 2 * buttonHeight;
+            sort.addEventListener("click", function() {
+                window.location = "sort.html";
+            });
+            stage.addChild(sort);
 
-            // initialize the arrays
-            for(var i=0; i<num; i++) {
-                redArray[i] = i;
-                blueArray[i] = i;
-            }
+            // Set clock game
+            var setClock = new createButton("Set Clock", "#669900", buttonWidth, buttonHeight);
+            setClock.x = stage.canvas.width/2 - buttonWidth/2;
+            setClock.y = 3 * buttonHeight + .5 * buttonHeight;
+            setClock.addEventListener("click", function() {
+                window.location = "setclock.html";
+            });
+            stage.addChild(setClock);
 
-            Shuffle(redArray);
-            Shuffle(blueArray);
-
-            for(i=0; i < num; i++) {
-                rCircle[i] = new Button("red", redArray[i]);
-                lCircle[i] = new Button("blue", blueArray[i]);
-                drawCircle(lCircle[i], i);
-                drawCircle(rCircle[i], i);
-            }
-        }
-
-        function drawCircle(circle, index) {
-
-            console.log(circle.color+" "+index);
-            circle.shape.graphics.beginFill(circle.color).drawCircle(0, 0, 30);
-
-            if(circle.color == "red") {
-                circle.shape.x = 50;
-            }
-            else {
-                circle.shape.x = 150;
-            }
-            circle.shape.y = (index + 1) * 70 - 25;
-            circle.shape.on("click", handleClick, null, false, [circle.color, circle.sound] );
-
-            stage.addChild(circle.shape);
             stage.update();
         }
 
-        function handleLoad(event) {
-        }
-
-        function handleClick(event, data) {
-            var color = data[0];
-            var sound = data[1];
-            console.log(color+" "+sound);
-
-            createjs.Sound.play(sound);
-
-            if(color != lastSound["color"]) {
-                if(sound === lastSound["sound"]) {
-                    console.log("Successful match!");
-                    var red = stage.getChildByName("red"+sound);
-                    var blue = stage.getChildByName("blue"+sound);
-                    red.graphics.beginFill("green").drawCircle(0, 0, 30);
-                    blue.graphics.beginFill("green").drawCircle(0, 0, 30);
-                    red.removeAllEventListeners();
-                    blue.removeAllEventListeners();
-                    match++;
-                }
-            }
-
-            lastSound["color"] = color;
-            lastSound["sound"] = sound;
-
-            if(match == num) {
-                Success();
-            }
-            stage.update();
-        }
-
-        // Shuffle the members of an array into a random order
-        function Shuffle(o) {
-            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-            return o;
-        }
-
-        function Success() {
-            stage.removeAllChildren();
-
-            var background = new createjs.Shape();
-            background.name = "background";
-            background.graphics.beginFill("red").drawRoundRect(0, 0, 150, 60, 10);
-
-            var label = new createjs.Text("You Win!", "bold 24px Arial", "#FFFFFF");
-            label.name = "label";
-            label.textAlign = "center";
-            label.textBaseline = "middle";
-            label.x = 150/2;
-            label.y = 60/2;
-
-            var button = new createjs.Container();
-            button.name = "button";
-            button.x = 20;
-            button.y = 20;
-            button.addChild(background, label);
-
-            stage.addChild(button);
-        }
 
     </script>
 </head>
 <body onLoad="init();">
-<canvas id="demoCanvas" width="480" height="640">
+<canvas id="canvas" width="480" height="640">
     alternate content
 </canvas>
 </body>
