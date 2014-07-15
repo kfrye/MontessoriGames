@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag and drop the shapes</title>
+
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+    <script>
+
+        var stageWidth = 640; // standard width
+        var stageHeight = 480;  // standard height
+        var stage; // stage that holds all graphics
+        var circles = []; // array of circular buttons
+        var num = 8; // number of buttons in array
+        var circleHeight = 30;
+        var buttonHeight = 40;
+        var buttonWidth = 150;
+
+        // Create a circular button with an attached sound
+        function Button(sound) {
+            this.shape = new createjs.Shape();
+            this.sound = "note"+(sound+1);
+            this.shape.name = this.sound;
+            this.number = sound;
+        }
+
+        // Draw a button on the screen with various handlers
+        function drawCircle(circle, color, index) {
+
+            console.log(index);
+            circle.shape.graphics.beginFill(color).drawCircle(0, 0, circleHeight);
+
+            circle.shape.x = (index + 1) * (circleHeight * 2.5) - circleHeight;
+            circle.shape.y = circleHeight * 3;
+            circle.shape.on("pressmove", pressMoveHandler);
+            circle.shape.on("pressup", pressUpHandler);
+            circle.shape.on("click", clickHandler, null, false, circle.sound);
+            stage.addChild(circle.shape);
+            stage.update();
+        }
+
+        // Move the button around when the mouse is clicked and held
+        function pressMoveHandler(evt){
+            evt.target.x = evt.stageX;
+            evt.target.y = evt.stageY;
+        }
+
+        // Play a sound when the button is clicked
+        function clickHandler(event, sound) {
+            createjs.Sound.play(sound);
+        }
+
+        // Move the buttons into a row after the mouse is released
+        function pressUpHandler() {
+            circles.sort(function(a, b) { return a.shape.x - b.shape.x});
+            positionCircles(circles);
+        }
+
+        // Performs the actual move animation for the buttons
+        function positionCircles(myArray) {
+            var length = myArray.length;
+
+            for(var i = 0; i < length; i++) {
+                var posX = (i + 1) * (circleHeight * 2.5) - circleHeight;
+                var posY = circleHeight * 3;
+                createjs.Tween.get(myArray[i].shape).to({x:posX},250).to({y:posY}, 250);
+            }
+            if(checkSuccess(myArray))
+                console.log("Success!")
+        }
+
+        // Check if the game is successful
+        function checkSuccess(myArray) {
+            var length = myArray.length;
+
+            for(var i = 0; i < length; i++) {
+                if(myArray[i].number != i)
+                    return false;
+            }
+            return true;
+        }
+
+        function submitClickHandler() {
+            if(checkSuccess(circles))
+                console.log("Success!");
+            else
+                console.log("Try again");
+        }
+
+        function init() {
+            // set up the stage
+            stage = new createjs.Stage("canvas");
+            stage.enableMouseOver();
+            createjs.Ticker.addEventListener("tick", stage);
+
+            loadSounds();
+
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Order from high to low", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
+
+            // initialize the arrays
+            var ordering = [];
+            var colors = [ "red", "orange", "yellow", "green", "blue", "violet", "purple", "pink"];
+            for(var i=0; i<num; i++) {
+                ordering[i] = i;
+            }
+
+            // randomize the order of the sounds
+            Shuffle(ordering);
+
+            // create a button for each sound and draw it on the screen
+            for(i=0; i < num; i++) {
+                circles[i] = new Button(ordering[i]);
+                drawCircle(circles[i], colors[i], i);
+            }
+
+            // Create submit button
+            var submitButton = createButton("Submit", "#0066CC", buttonWidth, buttonHeight);
+            submitButton.x = stage.canvas.width / 2 - buttonWidth - 30;
+            submitButton.y = circleHeight * 3 + buttonHeight * 1.5;
+            submitButton.on("click", submitClickHandler);
+            stage.addChild(submitButton);
+
+            // Create 'New Game' button
+            var newgameButton = createButton("New Game", "#CC3300", buttonWidth, buttonHeight);
+            newgameButton.x = stage.canvas.width / 2 + 30;
+            newgameButton.y = circleHeight * 3 + buttonHeight * 1.5;
+            stage.addChild(newgameButton);
+
+            stage.update();
+        }
+    </script>
+</head>
+
+<body onload="init()">
+<canvas id="canvas" width="640" height="480"></canvas>
+</body>
+</html>

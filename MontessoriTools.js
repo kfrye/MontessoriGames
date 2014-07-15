@@ -19,3 +19,32 @@ function createButton(labelText, color, width, height) {
 
     return cont;
 }
+
+function loadSounds() {
+    if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+
+    var audioPath = "res/";
+    var manifest = [
+        {id:"note1", src:"note1.mp3"},
+        {id:"note2", src:"note2.mp3"},
+        {id:"note3", src:"note3.mp3"},
+        {id:"note4", src:"note4.mp3"},
+        {id:"note5", src:"note5.mp3"},
+        {id:"note6", src:"note6.mp3"},
+        {id:"note7", src:"note7.mp3"},
+        {id:"note8", src:"note8.mp3"}
+    ];
+    createjs.Sound.registerManifest(manifest, audioPath);
+}
+
+// Randomize members of an array
+function Shuffle(o) {
+    for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+}
+
+// Find the appropriate x coordinate for a label
+function centerText(label) {
+    var b = label.getBounds();
+    return stage.canvas.width/2 - b.width/2;
+}
