@@ -25,7 +25,6 @@
 
         // Move the button around when the mouse is clicked and held
         function pressMoveHandler(evt){
-            statusMsg.text = "";
             evt.target.x = evt.stageX;
             evt.target.y = evt.stageY;
         }
@@ -50,6 +49,8 @@
                 var posY = circleHeight * 3;
                 createjs.Tween.get(myArray[i].shape).to({x:posX},250).to({y:posY}, 250);
             }
+            if(checkSuccess(myArray))
+                console.log("Success!")
         }
 
         // Check if the game is successful

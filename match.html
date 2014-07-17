@@ -2,12 +2,18 @@
 <html>
 <head>
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+
     <script>
         var stage;
         var rCircle = [];
         var lCircle = [];
         var num = 5;
         var match = 0;
+        var circleHeight = 30;
+        var buttonHeight = 40;
+        var buttonWidth = 150;
+        var statusMatch;
 
         function Button(color, sound) {
             this.shape = new createjs.Shape();
@@ -21,76 +27,37 @@
             sound: 0
         };
 
-        function init() {
-            if (!createjs.Sound.initializeDefaultPlugins()) {return;}
-
-            var audioPath = "res/";
-            var manifest = [
-                {id:"note1", src:"note1.mp3"},
-                {id:"note2", src:"note2.mp3"},
-                {id:"note3", src:"note3.mp3"},
-                {id:"note4", src:"note4.mp3"},
-                {id:"note5", src:"note5.mp3"}
-            ];
-            var redArray = [];
-            var blueArray = [];
-
-            createjs.Sound.addEventListener("fileload", handleLoad);
-            createjs.Sound.registerManifest(manifest, audioPath);
-            stage = new createjs.Stage("demoCanvas");
-
-            // initialize the arrays
-            for(var i=0; i<num; i++) {
-                redArray[i] = i;
-                blueArray[i] = i;
-            }
-
-            Shuffle(redArray);
-            Shuffle(blueArray);
-
-            for(i=0; i < num; i++) {
-                rCircle[i] = new Button("red", redArray[i]);
-                lCircle[i] = new Button("blue", blueArray[i]);
-                drawCircle(lCircle[i], i);
-                drawCircle(rCircle[i], i);
-            }
-        }
-
         function drawCircle(circle, index) {
+            circle.shape.graphics.beginFill(circle.color).drawCircle(0, 0, circleHeight);
 
-            console.log(circle.color+" "+index);
-            circle.shape.graphics.beginFill(circle.color).drawCircle(0, 0, 30);
-
+            // red circles go into the first column
             if(circle.color == "red") {
-                circle.shape.x = 50;
+                circle.shape.x = stage.canvas.width/2 - circleHeight * 2;
             }
+
+            // blue circles go into the second column
             else {
-                circle.shape.x = 150;
+                circle.shape.x = stage.canvas.width/2 + circleHeight * 2;
             }
-            circle.shape.y = (index + 1) * 70 - 25;
+
+            circle.shape.y = (index + 1) * (circleHeight * 2.5) + circleHeight;
             circle.shape.on("click", handleClick, null, false, [circle.color, circle.sound] );
 
             stage.addChild(circle.shape);
-            stage.update();
-        }
-
-        function handleLoad(event) {
         }
 
         function handleClick(event, data) {
             var color = data[0];
             var sound = data[1];
-            console.log(color+" "+sound);
 
             createjs.Sound.play(sound);
 
             if(color != lastSound["color"]) {
                 if(sound === lastSound["sound"]) {
-                    console.log("Successful match!");
                     var red = stage.getChildByName("red"+sound);
                     var blue = stage.getChildByName("blue"+sound);
-                    red.graphics.beginFill("green").drawCircle(0, 0, 30);
-                    blue.graphics.beginFill("green").drawCircle(0, 0, 30);
+                    red.graphics.beginFill("green").drawCircle(0, 0, circleHeight);
+                    blue.graphics.beginFill("green").drawCircle(0, 0, circleHeight);
                     red.removeAllEventListeners();
                     blue.removeAllEventListeners();
                     match++;
@@ -101,44 +68,65 @@
             lastSound["sound"] = sound;
 
             if(match == num) {
-                Success();
+                statusMatch.text = "Correct!";
             }
             stage.update();
         }
 
-        // Shuffle the members of an array into a random order
-        function Shuffle(o) {
-            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-            return o;
+        // Click to start a new game
+        function newGameClickHandler() {
+            stage.update();
         }
 
-        function Success() {
-            stage.removeAllChildren();
+        function init() {
+            stage = new createjs.Stage("canvas");
+            loadSounds();
 
-            var background = new createjs.Shape();
-            background.name = "background";
-            background.graphics.beginFill("red").drawRoundRect(0, 0, 150, 60, 10);
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Match the sounds on left and right:", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
 
-            var label = new createjs.Text("You Win!", "bold 24px Arial", "#FFFFFF");
-            label.name = "label";
-            label.textAlign = "center";
-            label.textBaseline = "middle";
-            label.x = 150/2;
-            label.y = 60/2;
+            // initialize the arrays
+            var redArray = [];
+            var blueArray = [];
+            for(var i=0; i<num; i++) {
+                redArray[i] = i;
+                blueArray[i] = i;
+            }
 
-            var button = new createjs.Container();
-            button.name = "button";
-            button.x = 20;
-            button.y = 20;
-            button.addChild(background, label);
+            // Randomize the sounds
+            Shuffle(redArray);
+            Shuffle(blueArray);
 
-            stage.addChild(button);
+            // Create and draw the buttons
+            for(i=0; i < num; i++) {
+                rCircle[i] = new Button("red", redArray[i]);
+                lCircle[i] = new Button("blue", blueArray[i]);
+                drawCircle(lCircle[i], i);
+                drawCircle(rCircle[i], i);
+            }
+
+            // Create 'New Game' button
+            var newgameButton = createButton("New Game", "#0066CC", buttonWidth, buttonHeight);
+            newgameButton.x = stage.canvas.width / 2 - buttonWidth/2;
+            newgameButton.y = circleHeight * 14 + buttonHeight;
+            newgameButton.on("click", newGameClickHandler);
+            stage.addChild(newgameButton);
+
+            //Create status message
+            statusMatch = new createjs.Text("Correct!", "bold 25px Arial", "#003300");
+            statusMatch.x = centerText(statusMatch);
+            statusMatch.y = circleHeight * 17 + buttonHeight;
+            statusMatch.text = "";
+            stage.addChild(statusMatch);
+            stage.update();
         }
-
     </script>
 </head>
 <body onLoad="init();">
-<canvas id="demoCanvas" width="480" height="640">
+<canvas id="canvas" width="480" height="640">
     alternate content
 </canvas>
 </body>
