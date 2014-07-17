@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>Set Clock</title>
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
 
     <script>
@@ -15,36 +15,6 @@
         var timeLabel;
         var time;
         var statusLabel;
-
-        function init() {
-            stage = new createjs.Stage("demo"); // points to the canvas element in html body
-
-            createClock();
-            createSubmitButton();
-            createNewClockButton();
-
-            // Add instructions for the game to the top of the screen
-            var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");
-            instructions.x = centerText(instructions);
-            instructions.y = 20;
-            stage.addChild(instructions);
-
-            // Add a randomly generated time to the screen
-            time = {};
-            time = generateTime(time);
-            timeLabel = new createjs.Text(time.hour + ":" + time.min, "bold 50px Arial", "#CC3300" );
-            timeLabel.x = centerText(timeLabel);
-            timeLabel.y = 60;
-            stage.addChild(timeLabel);
-
-            // Add a status message to the bottom of the screen
-            statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");
-            statusLabel.text = "Beginning status";
-            statusLabel.x = centerText(statusLabel);
-            statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
-            stage.addChild(statusLabel);
-            stage.update();
-        }
 
         // add the clock to the canvas
         function createClock() {
@@ -62,14 +32,14 @@
 
             // Add clock minute hand
             min = new createjs.Shape();
-            min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 5);
+            min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 10);
             min.on("pressmove", clockHandPressMoveHandler);
             clockContainer.addChild(min);
             console.log(min.rotation);
 
             // Add clock hour hand
             hr = new createjs.Shape();
-            hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 7);
+            hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
             hr.on("pressmove", clockHandPressMoveHandler);
             clockContainer.addChild(hr);
             drawNumbers();
@@ -262,10 +232,40 @@
             min.rotation = 330;
             stage.update();
         }
+
+        function init() {
+            stage = new createjs.Stage("canvas"); // points to the canvas element in html body
+
+            createClock();
+            createSubmitButton();
+            createNewClockButton();
+
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
+
+            // Add a randomly generated time to the screen
+            time = {};
+            time = generateTime(time);
+            timeLabel = new createjs.Text(time.hour + ":" + time.min, "bold 50px Arial", "#CC3300" );
+            timeLabel.x = centerText(timeLabel);
+            timeLabel.y = 60;
+            stage.addChild(timeLabel);
+
+            // Add a status message to the bottom of the screen
+            statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");
+            statusLabel.text = "Beginning status";
+            statusLabel.x = centerText(statusLabel);
+            statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
+            stage.addChild(statusLabel);
+            stage.update();
+        }
     </script>
 </head>
 <body onLoad="init();">
-<canvas id="demo" width="480" height="640">
+<canvas id="canvas" width="480" height="640">
 </canvas>
 </body>
 </html>
