@@ -35,7 +35,6 @@
             min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 10);
             min.on("pressmove", clockHandPressMoveHandler);
             clockContainer.addChild(min);
-            console.log(min.rotation);
 
             // Add clock hour hand
             hr = new createjs.Shape();
@@ -118,7 +117,6 @@
             // Get the angle of the clock hands
             var hourDeg = hr.rotation;
             var minDeg = min.rotation;
-            console.log("Hour angle: " + hourDeg + " Min angle: "+minDeg);
 
             // Get the corresponding clock numbers
             var hourNum = determineClockNumber(hourDeg);
@@ -129,7 +127,6 @@
                minNum = 0;
             else
                minNum = minNum * 5;
-            console.log("Hour: " + hourNum + " Min: " + minNum);
 
             // Check for success
             if(minNum == time.min &&
@@ -167,10 +164,8 @@
             statusLabel.text = "";
             var dx = stage.mouseX - clockContainer.x;
             var dy = stage.mouseY - clockContainer.y;
-            var angle = getAngle(dx, dy); 
-            var clockNum = determineClockNumber(angle);
+            var angle = getAngle(dx, dy);
 
-            console.log("Angle: " + angle + " clock num: " + clockNum);
             event.target.rotation = angle;
             stage.update();
         }
@@ -216,7 +211,6 @@
             var min = minArray[minIndex];
             clock.hour = hour;
             clock.min = min;
-            console.log(hour + ":" + min);
             return clock;
         }
 
@@ -259,6 +253,7 @@
             statusLabel.text = "Beginning status";
             statusLabel.x = centerText(statusLabel);
             statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
+            statusLabel.text = "";
             stage.addChild(statusLabel);
             stage.update();
         }
