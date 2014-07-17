@@ -73,8 +73,42 @@
             stage.update();
         }
 
+        // generate two arrays of random numbers of size num
+        function randomizeArrays() {
+            var redArray = [];
+            var blueArray = [];
+            for(var i=0; i<num; i++) {
+                redArray[i] = i;
+                blueArray[i] = i;
+            }
+
+            // Randomize the sounds
+            Shuffle(redArray);
+            Shuffle(blueArray);
+            return [redArray, blueArray];
+        }
+
         // Click to start a new game
         function newGameClickHandler() {
+            var buttonArray = randomizeArrays();
+            var redArray = buttonArray[0];
+            var blueArray = buttonArray[1];
+
+            for(var i=0; i<num; i++) {
+                var sound = "note"+(redArray[i]+1);
+                rCircle[i].shape.removeAllEventListeners();
+                rCircle[i].sound = "note"+sound;
+                rCircle[i].shape.name = "red"+sound;
+                rCircle[i].shape.graphics.beginFill("red").drawCircle(0, 0, circleHeight);
+                rCircle[i].shape.on("click", handleClick, null, false, ["red", sound] );
+
+                sound = "note"+(blueArray[i]+1);
+                lCircle[i].shape.removeAllEventListeners();
+                lCircle[i].sound = "note"+sound;
+                lCircle[i].shape.name = "blue"+sound;
+                lCircle[i].shape.graphics.beginFill("blue").drawCircle(0, 0, circleHeight);
+                lCircle[i].shape.on("click", handleClick, null, false, ["blue", sound] );
+            }
             stage.update();
         }
 
@@ -89,16 +123,9 @@
             stage.addChild(instructions);
 
             // initialize the arrays
-            var redArray = [];
-            var blueArray = [];
-            for(var i=0; i<num; i++) {
-                redArray[i] = i;
-                blueArray[i] = i;
-            }
-
-            // Randomize the sounds
-            Shuffle(redArray);
-            Shuffle(blueArray);
+            var buttonArray = randomizeArrays();
+            var redArray = buttonArray[0];
+            var blueArray = buttonArray[1];
 
             // Create and draw the buttons
             for(i=0; i < num; i++) {
