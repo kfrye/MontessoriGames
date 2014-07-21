@@ -14,7 +14,7 @@
             stage = new createjs.Stage("canvas");
 
             // Match Sounds Game
-            var match = new createButton("Match Sounds", "#6600FF", buttonWidth, buttonHeight);
+            var match = new CreateButton("Match Sounds", "#6600FF", buttonWidth, buttonHeight);
             match.x = stage.canvas.width/2 - buttonWidth/2;
             match.y = 20;
             match.addEventListener("click", function() {
@@ -23,7 +23,7 @@
             stage.addChild(match);
 
             // Order the sounds game
-            var sort = new createButton("Sort Sounds", "#993300", buttonWidth, buttonHeight);
+            var sort = new CreateButton("Sort Sounds", "#993300", buttonWidth, buttonHeight);
             sort.x = stage.canvas.width/2 - buttonWidth/2;
             sort.y = 2 * buttonHeight;
             sort.addEventListener("click", function() {
@@ -32,7 +32,7 @@
             stage.addChild(sort);
 
             // Set clock game
-            var setClock = new createButton("Set Clock", "#669900", buttonWidth, buttonHeight);
+            var setClock = new CreateButton("Set Clock", "#669900", buttonWidth, buttonHeight);
             setClock.x = stage.canvas.width/2 - buttonWidth/2;
             setClock.y = 3 * buttonHeight + .5 * buttonHeight;
             setClock.addEventListener("click", function() {

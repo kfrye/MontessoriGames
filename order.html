@@ -89,7 +89,7 @@
                 ordering[i] = i;
             }
             Shuffle(ordering);
-            for(var i=0; i<num; i++) {
+            for(i=0; i<num; i++) {
                 circles[i].sound = "note"+(ordering[i]+1);
                 circles[i].shape.graphics.beginFill(colors[i]).drawCircle(0, 0, circleHeight);
                 circles[i].shape.removeAllEventListeners();
@@ -118,7 +118,7 @@
             stage.addChild(instructions);
 
             // create a button for each sound and draw it on the screen
-            for(i=0; i < num; i++) {
+            for(var i=0; i < num; i++) {
                 circles[i] = new Button();
             }
 

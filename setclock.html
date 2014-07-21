@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Set Clock</title>
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
 
     <script>
         var stage, clockContainer, min, hr;
@@ -15,35 +16,6 @@
         var timeLabel;
         var time;
         var statusLabel;
-
-        // add the clock to the canvas
-        function createClock() {
-            clockContainer = stage.addChild(new createjs.Container()); // container to hold the clock
-            clockContainer.x = stage.canvas.width/2;
-            clockContainer.y = stage.canvas.height/2;
-
-            // Add clock minute markers
-            for(var deg = 0; deg <= 360; deg+= 6) {
-                var marker = new createjs.Shape();
-                marker.graphics.beginFill("black").drawCircle(clockRadius,0,1);
-                marker.rotation = deg;
-                clockContainer.addChild(marker);
-            }
-
-            // Add clock minute hand
-            min = new createjs.Shape();
-            min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 10);
-            min.on("pressmove", clockHandPressMoveHandler);
-            clockContainer.addChild(min);
-
-            // Add clock hour hand
-            hr = new createjs.Shape();
-            hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
-            hr.on("pressmove", clockHandPressMoveHandler);
-            clockContainer.addChild(hr);
-            drawNumbers();
-            initializeHands();
-        }
 
         // Add numbers to the clock
         function drawNumbers(){
@@ -164,9 +136,8 @@
             statusLabel.text = "";
             var dx = stage.mouseX - clockContainer.x;
             var dy = stage.mouseY - clockContainer.y;
-            var angle = getAngle(dx, dy);
 
-            event.target.rotation = angle;
+            event.target.rotation = getAngle(dx, dy);
             stage.update();
         }
 
@@ -229,8 +200,9 @@
 
         function init() {
             stage = new createjs.Stage("canvas"); // points to the canvas element in html body
-
-            createClock();
+            createClock(stage.canvas.width/2, stage.canvas.height/2);
+            min.on("pressmove", clockHandPressMoveHandler);
+            hr.on("pressmove", clockHandPressMoveHandler);
             createSubmitButton();
             createNewClockButton();
 
