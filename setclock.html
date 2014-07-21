@@ -17,45 +17,9 @@
         var time;
         var statusLabel;
 
-        // Add the submit button to the canvas
-        function createSubmitButton() {
-            var submitContainer = new createjs.Container();
-            submitContainer.y = stage.canvas.height/2 + clockRadius + 50;
-            submitContainer.x = stage.canvas.width/2 - buttonWidth - 30;
-            stage.addChild(submitContainer);
 
-            var submitButton = new createjs.Shape();
-            submitButton.graphics.beginFill("#0066CC").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
-            submitButton.on("click", submitButtonClickHandler);
-            submitContainer.addChild(submitButton);
 
-            var submitText = new createjs.Text("Submit", "bold 25px Arial", "white");
-            submitText.textAlign = "center";
-            submitText.textBaseline = "middle";
-            submitText.x = buttonWidth/2;
-            submitText.y = 20;
-            submitContainer.addChild(submitText);
-        }
 
-        // Add the 'New Clock' button to the canvas
-        function createNewClockButton() {
-            var newClockContainer = new createjs.Container();
-            newClockContainer.y = stage.canvas.height/2 + clockRadius + 50;
-            newClockContainer.x = stage.canvas.width/2 + 30;
-            stage.addChild(newClockContainer);
-
-            var newClockButton = new createjs.Shape();
-            newClockButton.graphics.beginFill("#CC3300").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
-            newClockButton.on("click", newClockButtonClickHandler);
-            newClockContainer.addChild(newClockButton);
-
-            var newClockText = new createjs.Text("New Clock", "bold 25px Arial", "white");
-            newClockText.textAlign = "center";
-            newClockText.textBaseline = "middle";
-            newClockText.x = buttonWidth/2;
-            newClockText.y = 20;
-            newClockContainer.addChild(newClockText);
-        }
 
         // Handle click event from the Submit button
         function submitButtonClickHandler() {
@@ -154,8 +118,8 @@
             min.on("pressmove", clockHandPressMoveHandler);
             hr.on("pressmove", clockHandPressMoveHandler);
             initializeHands();
-            createSubmitButton();
-            createNewClockButton();
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, stage.canvas.height/2 + clockRadius + 50);
+            createNewClockButton(stage.canvas.width/2 + 30, stage.canvas.height/2 + clockRadius + 50);
 
             // Add instructions for the game to the top of the screen
             var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");

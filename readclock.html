@@ -45,6 +45,16 @@
             hr.rotation += hourTweak;
         }
 
+        // Handle click event from the Submit button
+        function submitButtonClickHandler() {
+
+        }
+
+        // Handle click event to the New Clock button
+        function newClockButtonClickHandler() {
+
+        }
+
         function init() {
             stage = new createjs.Stage("canvas"); // points to the canvas element in html body
 
@@ -58,6 +68,8 @@
             createClock(stage.canvas.width/2, 250);
             resetClock(time);
 
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 550);
+            createNewClockButton(stage.canvas.width/2 + 30, 550);
             stage.update();
         }
     </script>

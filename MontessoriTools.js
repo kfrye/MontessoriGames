@@ -131,3 +131,43 @@ function getAngleFromNumber(num) {
     var angle = 30 * (num - 3);
     return angle;
 }
+
+// Add the submit button to the canvas
+function createSubmitButton(xCoor, yCoor) {
+    var submitContainer = new createjs.Container();
+    submitContainer.x = xCoor;
+    submitContainer.y = yCoor;
+    stage.addChild(submitContainer);
+
+    var submitButton = new createjs.Shape();
+    submitButton.graphics.beginFill("#0066CC").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
+    submitButton.on("click", submitButtonClickHandler);
+    submitContainer.addChild(submitButton);
+
+    var submitText = new createjs.Text("Submit", "bold 25px Arial", "white");
+    submitText.textAlign = "center";
+    submitText.textBaseline = "middle";
+    submitText.x = buttonWidth/2;
+    submitText.y = 20;
+    submitContainer.addChild(submitText);
+}
+
+// Add the 'New Clock' button to the canvas
+function createNewClockButton(xCoor, yCoor) {
+    var newClockContainer = new createjs.Container();
+    newClockContainer.y = yCoor;
+    newClockContainer.x = xCoor;
+    stage.addChild(newClockContainer);
+
+    var newClockButton = new createjs.Shape();
+    newClockButton.graphics.beginFill("#CC3300").drawRoundRect(0,0, buttonWidth, buttonHeight, 2 );
+    newClockButton.on("click", newClockButtonClickHandler);
+    newClockContainer.addChild(newClockButton);
+
+    var newClockText = new createjs.Text("New Clock", "bold 25px Arial", "white");
+    newClockText.textAlign = "center";
+    newClockText.textBaseline = "middle";
+    newClockText.x = buttonWidth/2;
+    newClockText.y = 20;
+    newClockContainer.addChild(newClockText);
+}
