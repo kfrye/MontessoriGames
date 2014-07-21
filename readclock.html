@@ -11,17 +11,53 @@
         var clockRadius = 150;
         var buttonWidth = 150;
         var buttonHeight = 40;
+        var minHandLength = clockRadius - 15;
+        var hourHandLength = clockRadius/2;
+        var time, min, hr;
+
+        function resetClock(time) {
+            time = generateTime(time);
+            hr.rotation = getAngleFromNumber(time.hour);;
+            var minNum;
+            var hourTweak;
+
+            switch(time.min) {
+                case "00":
+                    minNum = 0;
+                    hourTweak = 0;
+                    break;
+                case "15":
+                    minNum = 3;
+                    hourTweak = 7.5;
+                    break;
+                case "30":
+                    minNum = 6;
+                    hourTweak = 15;
+                    break;
+                case "45":
+                    minNum = 9;
+                    hourTweak = 20;
+                    break;
+                default:
+                    minNum = 0;
+            }
+            min.rotation = getAngleFromNumber(minNum);
+            hr.rotation += hourTweak;
+        }
 
         function init() {
             stage = new createjs.Stage("canvas"); // points to the canvas element in html body
 
             // Add instructions for the game to the top of the screen
-            var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");
+            var instructions = new createjs.Text("Read the clock:", "bold 25px Arial", "#0066CC");
             instructions.x = centerText(instructions);
             instructions.y = 20;
             stage.addChild(instructions);
 
-            createClock(stage.canvas.width/2, 50);
+            time = {};
+            createClock(stage.canvas.width/2, 250);
+            resetClock(time);
+
             stage.update();
         }
     </script>

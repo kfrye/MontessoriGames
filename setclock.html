@@ -114,18 +114,6 @@
             stage.update();
         }
 
-        // Get the angle of rotation for the given x,y coordinates relative
-        // to the x-axis
-        function getAngle(x, y) {
-            var angle = Math.atan2(y, x);
-            angle = angle * (180/Math.PI);
-            if(angle < 0)
-            {
-                angle = 360 - (-angle);
-            }
-            return angle;
-        }
-
         // Given an angle (in degrees), find the clock number 
         function determineClockNumber(degree) {
             var num = degree/30 + 3;
@@ -145,17 +133,6 @@
             if(num > 12.5)
                 num -= 12;
             return num;
-        }
-
-        // Generate a random time and return an object containing it
-        function generateTime(clock) {
-            var hour = Math.floor((Math.random() * 12) + 1);
-            var minArray = ["00", "15", "30", "45"];
-            var minIndex = Math.floor((Math.random() * 4));
-            var min = minArray[minIndex];
-            clock.hour = hour;
-            clock.min = min;
-            return clock;
         }
 
         // Find the appropriate x coordinate for a label

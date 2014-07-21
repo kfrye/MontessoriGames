@@ -72,32 +72,62 @@ function createClock(xCoor, yCoor) {
     hr = new createjs.Shape();
     hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
     clockContainer.addChild(hr);
-    drawNumbers();
+    drawNumbers(xCoor, yCoor);
 }
 
 // Add numbers to the clock
-function drawNumbers(){
+function drawNumbers(xCoor, yCoor){
     var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
 
-    function toRadians (angle) {
-        return angle * (Math.PI / 180);
-    }
-
-    function placeNumbers(number){
-        var placement=((number%12/12)*360);
-        var text=new createjs.Text(number.toString(),"25px Arial");
-        text.textBaseline="middle";
-        text.textAlign="center";
-        text.x=stage.canvas.width/2;
-        text.y=stage.canvas.height/2;
-        var r=clockRadius + 20;
-        var x=r*Math.sin(toRadians(placement));
-        var y=r*Math.cos(toRadians(placement));
-        text.regX=-x;
-        text.regY=y;
+    for (var num in numbers) {
+        var text = placeNumber(numbers[num], xCoor, yCoor, clockRadius + 20);
         stage.addChild(text);
     }
+}
 
-    for (var num in numbers)
-        placeNumbers(numbers[num]);
+function toRadians(angle) {
+    return angle * (Math.PI / 180);
+}
+
+function placeNumber(number, xCoor, yCoor, radius) {
+    var placement=((number%12/12)*360);
+    var text=new createjs.Text(number.toString(),"25px Arial");
+    text.textBaseline="middle";
+    text.textAlign="center";
+    text.x=xCoor;
+    text.y=yCoor;
+    var x=radius*Math.sin(toRadians(placement));
+    var y=radius*Math.cos(toRadians(placement));
+    text.regX=-x;
+    text.regY=y;
+    return text;
+
+}
+
+// Generate a random time and return an object containing it
+function generateTime(clock) {
+    var hour = Math.floor((Math.random() * 12) + 1);
+    var minArray = ["00", "15", "30", "45"];
+    var minIndex = Math.floor((Math.random() * 4));
+    var min = minArray[minIndex];
+    clock.hour = hour;
+    clock.min = min;
+    return clock;
+}
+
+// Get the angle of rotation for the given x,y coordinates relative
+// to the x-axis
+function getAngle(x, y) {
+    var angle = Math.atan2(y, x);
+    angle = angle * (180/Math.PI);
+    if(angle < 0)
+    {
+        angle = 360 - (-angle);
+    }
+    return angle;
+}
+
+function getAngleFromNumber(num) {
+    var angle = 30 * (num - 3);
+    return angle;
 }
