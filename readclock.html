@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Read Clock</title>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+    <script>
+        var stageWidth = 640;
+        var stageHeight = 480;
+        var clockRadius = 150;
+        var buttonWidth = 150;
+        var buttonHeight = 40;
+
+        function init() {
+            stage = new createjs.Stage("canvas"); // points to the canvas element in html body
+
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
+
+            createClock(stage.canvas.width/2, 50);
+            stage.update();
+        }
+    </script>
+</head>
+<body onLoad="init();">
+<canvas id="canvas" width="480" height="640">
+</canvas>
+</body>
+</html>

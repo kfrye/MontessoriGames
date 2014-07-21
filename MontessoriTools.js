@@ -73,5 +73,31 @@ function createClock(xCoor, yCoor) {
     hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
     clockContainer.addChild(hr);
     drawNumbers();
-    initializeHands();
+}
+
+// Add numbers to the clock
+function drawNumbers(){
+    var numbers=[1,2,3,4,5,6,7,8,9,10,11,12];
+
+    function toRadians (angle) {
+        return angle * (Math.PI / 180);
+    }
+
+    function placeNumbers(number){
+        var placement=((number%12/12)*360);
+        var text=new createjs.Text(number.toString(),"25px Arial");
+        text.textBaseline="middle";
+        text.textAlign="center";
+        text.x=stage.canvas.width/2;
+        text.y=stage.canvas.height/2;
+        var r=clockRadius + 20;
+        var x=r*Math.sin(toRadians(placement));
+        var y=r*Math.cos(toRadians(placement));
+        text.regX=-x;
+        text.regY=y;
+        stage.addChild(text);
+    }
+
+    for (var num in numbers)
+        placeNumbers(numbers[num]);
 }
