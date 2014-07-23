@@ -14,6 +14,7 @@
         var minHandLength = clockRadius - 15;
         var hourHandLength = clockRadius/2;
         var time, min, hr;
+        var statusLabel;
 
         function resetClock(time) {
             time = generateTime(time);
@@ -47,7 +48,14 @@
 
         // Handle click event from the Submit button
         function submitButtonClickHandler() {
-
+            var txtHour = document.getElementById("txtHour").value;
+            var txtMin = document.getElementById("txtMin").value;
+            if(txtHour == time.hour && txtMin == time.min)
+                statusLabel.text = "Correct!";
+            else
+                statusLabel.text = "Try Again!";
+            statusLabel.x = centerText(statusLabel);
+            stage.update();
         }
 
         // Handle click event to the New Clock button
@@ -68,8 +76,17 @@
             createClock(stage.canvas.width/2, 250);
             resetClock(time);
 
-            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 550);
-            createNewClockButton(stage.canvas.width/2 + 30, 550);
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 520);
+            createNewClockButton(stage.canvas.width/2 + 12, 520);
+
+            // Add a status message to the bottom of the screen
+            statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");
+            statusLabel.text = "Beginning status";
+            statusLabel.x = centerText(statusLabel);
+            statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
+            //statusLabel.text = "";
+            stage.addChild(statusLabel);
+
             stage.update();
         }
     </script>
@@ -77,5 +94,13 @@
 <body onLoad="init();">
 <canvas id="canvas" width="480" height="640">
 </canvas>
+<form>
+    <div style="position: absolute; top: 450px; left: 175px; font-size: 35px; color: red">
+    <input id="txtHour" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: red" size="2" />
+    :
+    <input id="txtMin" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: red" size="2" />
+    </div>
+    <br>
+</form>
 </body>
 </html>
