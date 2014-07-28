@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Word Match</title>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+
+    <script>
+        var stage;
+        var list = [
+                "baby", "bird", "boy", "cat", "dog", "girl"
+        ];
+        var words = [];
+        var pictures = [];
+        var num = 3;
+        var img;
+
+        function init() {
+            stage = new createjs.Stage("canvas");
+            createjs.Ticker.addEventListener("tick", stage);
+
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Match the words and pictures:", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
+
+            Shuffle(list);
+            for(var i = 0; i < num; i++) {
+                words[i] = new createjs.Bitmap("res/"+list[i]+"-word.jpg");
+                words[i].name = list[i];
+                words[i].x = 50;
+                words[i].y = i * 175 + 125;
+                stage.addChild(words[i]);
+
+                pictures[i] = new createjs.Bitmap("res/"+list[i]+"-image.jpg");
+                pictures[i].name = list[i];
+                pictures[i].x = 200;
+                pictures[i].y = i * 175 + 75;
+                stage.addChild(pictures[i]);
+            }
+//            Shuffle(words);
+//            Shuffle(pictures);
+
+            stage.update();
+        }
+    </script>
+</head>
+<body onLoad="init();">
+<canvas id="canvas" width="480" height="640">
+</canvas>
+<!--<div>-->
+    <!--<img src="cat.jpg">-->
+<!--</div>-->
+</body>
+</html>
