@@ -40,6 +40,15 @@
             });
             stage.addChild(setClock);
 
+            // Read clock game
+            var readClock = new CreateButton("Read Clock", "#6600CC", buttonWidth, buttonHeight);
+            readClock.x = stage.canvas.width/2 - buttonWidth/2;
+            readClock.y = 4 * buttonHeight +  buttonHeight;
+            readClock.addEventListener("click", function() {
+                window.location = "readclock.html";
+            });
+            stage.addChild(readClock);
+
             stage.update();
         }
 

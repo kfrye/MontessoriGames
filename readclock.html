@@ -60,7 +60,10 @@
 
         // Handle click event to the New Clock button
         function newClockButtonClickHandler() {
-
+            resetClock(time);
+            document.getElementById("txtHour").value = "";
+            document.getElementById("txtMin").value = "";
+            stage.update();
         }
 
         function init() {
@@ -84,7 +87,7 @@
             statusLabel.text = "Beginning status";
             statusLabel.x = centerText(statusLabel);
             statusLabel.y = stage.canvas.height/2 + clockRadius + buttonHeight + 90;
-            //statusLabel.text = "";
+            statusLabel.text = "";
             stage.addChild(statusLabel);
 
             stage.update();
@@ -95,10 +98,10 @@
 <canvas id="canvas" width="480" height="640">
 </canvas>
 <form>
-    <div style="position: absolute; top: 450px; left: 175px; font-size: 35px; color: red">
-    <input id="txtHour" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: red" size="2" />
+    <div style="position: absolute; top: 450px; left: 175px; font-size: 35px; color: #0099FF">
+    <input id="txtHour" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
     :
-    <input id="txtMin" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: red" size="2" />
+    <input id="txtMin" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
     </div>
     <br>
 </form>
