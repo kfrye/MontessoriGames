@@ -9,12 +9,49 @@
     <script>
         var stage;
         var list = [
-                "baby", "bird", "boy", "cat", "dog", "girl"
+                "baby", "bird", "boy", "cat", "dog", "girl", "apple", "car", "tractor"
         ];
         var words = [];
         var pictures = [];
         var num = 3;
         var img;
+        var buttonWidth = 150;
+        var buttonHeight = 40;
+
+        // Move the button around when the mouse is clicked and held
+        function pressMoveHandler(evt){
+            evt.target.x = evt.stageX;
+            evt.target.y = evt.stageY;
+        }
+
+        // Move the buttons into a row after the mouse is released
+        function pressUpHandler() {
+            words.sort(function(a, b) { return a.y - b.y});
+            pictures.sort(function(a, b) { return a.y - b.y});
+            positionArrays();
+        }
+
+        // Performs the actual move animation for the buttons
+        function positionArrays() {
+            var length = num;
+
+            for(var i = 0; i < length; i++) {
+                var posX = 50;
+                var posY = i * 175 + 125;
+                createjs.Tween.get(words[i]).to({x:posX},250).to({y:posY}, 250);
+                posX = 250;
+                posY = i * 175 + 75;
+                createjs.Tween.get(pictures[i]).to({x:posX},250).to({y:posY}, 250);
+            }
+        }
+
+        function submitButtonClickHandler() {
+
+        }
+
+        function newClockButtonClickHandler() {
+
+        }
 
         function init() {
             stage = new createjs.Stage("canvas");
@@ -32,16 +69,22 @@
                 words[i].name = list[i];
                 words[i].x = 50;
                 words[i].y = i * 175 + 125;
+                words[i].on("pressmove", pressMoveHandler);
+                words[i].on("pressup", pressUpHandler, "word");
                 stage.addChild(words[i]);
 
                 pictures[i] = new createjs.Bitmap("res/"+list[i]+"-image.jpg");
                 pictures[i].name = list[i];
-                pictures[i].x = 200;
+                pictures[i].x = 250;
                 pictures[i].y = i * 175 + 75;
+                pictures[i].on("pressmove", pressMoveHandler);
+                pictures[i].on("pressup", pressUpHandler, "picture");
                 stage.addChild(pictures[i]);
             }
 //            Shuffle(words);
 //            Shuffle(pictures);
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 175 + 75);
+            createNewClockButton(stage.canvas.width/2 + 10, 3 * 175 + 75, "New Game");
 
             stage.update();
         }

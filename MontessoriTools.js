@@ -153,7 +153,7 @@ function createSubmitButton(xCoor, yCoor) {
 }
 
 // Add the 'New Clock' button to the canvas
-function createNewClockButton(xCoor, yCoor) {
+function createNewClockButton(xCoor, yCoor, text) {
     var newClockContainer = new createjs.Container();
     newClockContainer.y = yCoor;
     newClockContainer.x = xCoor;
@@ -164,7 +164,7 @@ function createNewClockButton(xCoor, yCoor) {
     newClockButton.on("click", newClockButtonClickHandler);
     newClockContainer.addChild(newClockButton);
 
-    var newClockText = new createjs.Text("New Clock", "bold 25px Arial", "white");
+    var newClockText = new createjs.Text(text, "bold 25px Arial", "white");
     newClockText.textAlign = "center";
     newClockText.textBaseline = "middle";
     newClockText.x = buttonWidth/2;
