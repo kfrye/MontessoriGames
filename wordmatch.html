@@ -17,6 +17,8 @@
         var img;
         var buttonWidth = 150;
         var buttonHeight = 40;
+        var preload;
+        var statusMessage;
 
         // Move the button around when the mouse is clicked and held
         function pressMoveHandler(evt){
@@ -26,6 +28,7 @@
 
         // Move the buttons into a row after the mouse is released
         function pressUpHandler() {
+            statusMessage.text = "";
             words.sort(function(a, b) { return a.y - b.y});
             pictures.sort(function(a, b) { return a.y - b.y});
             positionArrays();
@@ -37,20 +40,66 @@
 
             for(var i = 0; i < length; i++) {
                 var posX = 50;
-                var posY = i * 175 + 125;
+                var posY = i * 165 + 90;
                 createjs.Tween.get(words[i]).to({x:posX},250).to({y:posY}, 250);
                 posX = 250;
-                posY = i * 175 + 75;
+                posY = i * 165 + 40;
                 createjs.Tween.get(pictures[i]).to({x:posX},250).to({y:posY}, 250);
             }
         }
 
         function submitButtonClickHandler() {
-
+            for(var i = 0; i < num; i++) {
+                if(words[i].name != pictures[i].name) {
+                    statusMessage.text = "Try Again";
+                    statusMessage.x = centerText(statusMessage);
+                    return;
+                }
+                statusMessage.text = "Correct!";
+                statusMessage.x = centerText(statusMessage);
+            }
         }
 
         function newClockButtonClickHandler() {
 
+        }
+
+        function loadImages(list) {
+            var manifest = [];
+            for(var i = 0; i < num; i++) {
+                manifest.push({ src:"res/"+list[i]+"-word.jpg", id: list[i]+"-word"});
+                manifest.push({ src:"res/"+list[i]+"-image.jpg", id: list[i]+"-image"});
+            }
+            preload = new createjs.LoadQueue();
+            preload.loadManifest(manifest, true);
+            preload.on("complete", handleComplete);
+        }
+
+        function handleComplete(event) {
+            var randomList = [];
+            for(var i = 0; i < num; i++) {
+                randomList[i] = list[i];
+            }
+
+            Shuffle(randomList);
+            for(var i = 0; i < num; i++) {
+                words[i] = new createjs.Bitmap(preload.getResult(randomList[i]+"-word"));
+                words[i].name = randomList[i];
+                words[i].on("pressmove", pressMoveHandler);
+                words[i].on("pressup", pressUpHandler);
+                words[i].x = 50;
+                words[i].y = i * 165 + 90;
+                stage.addChild(words[i]);
+
+                pictures[i] = new createjs.Bitmap(preload.getResult(list[i]+"-image"));
+                pictures[i].name = list[i];
+                pictures[i].on("pressmove", pressMoveHandler);
+                pictures[i].on("pressup", pressUpHandler);
+                pictures[i].x = 250;
+                pictures[i].y = i * 165 + 40;
+                stage.addChild(pictures[i]);
+            }
+            positionArrays();
         }
 
         function init() {
@@ -60,33 +109,20 @@
             // Add instructions for the game to the top of the screen
             var instructions = new createjs.Text("Match the words and pictures:", "bold 25px Arial", "#0066CC");
             instructions.x = centerText(instructions);
-            instructions.y = 20;
+            instructions.y = 0;
             stage.addChild(instructions);
 
             Shuffle(list);
-            for(var i = 0; i < num; i++) {
-                words[i] = new createjs.Bitmap("res/"+list[i]+"-word.jpg");
-                words[i].name = list[i];
-                words[i].x = 50;
-                words[i].y = i * 175 + 125;
-                words[i].on("pressmove", pressMoveHandler);
-                words[i].on("pressup", pressUpHandler, "word");
-                stage.addChild(words[i]);
+            loadImages(list);
 
-                pictures[i] = new createjs.Bitmap("res/"+list[i]+"-image.jpg");
-                pictures[i].name = list[i];
-                pictures[i].x = 250;
-                pictures[i].y = i * 175 + 75;
-                pictures[i].on("pressmove", pressMoveHandler);
-                pictures[i].on("pressup", pressUpHandler, "picture");
-                stage.addChild(pictures[i]);
-            }
-//            Shuffle(words);
-//            Shuffle(pictures);
-            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 175 + 75);
-            createNewClockButton(stage.canvas.width/2 + 10, 3 * 175 + 75, "New Game");
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 165 + 50);
+            createNewClockButton(stage.canvas.width/2 + 10, 3 * 165 + 50, "New Game");
 
-            stage.update();
+            statusMessage = new createjs.Text("Beginning Status", "bold 25px Arial", "#0066CC");
+            statusMessage.x = centerText(statusMessage);
+            statusMessage.y = 3 * 165 + 110;
+            statusMessage.text = "";
+            stage.addChild(statusMessage);
         }
     </script>
 </head>
