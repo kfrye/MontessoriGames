@@ -60,21 +60,30 @@
         }
 
         function newClockButtonClickHandler() {
-
+            clearGame();
+            resetGame();
         }
 
         function loadImages(list) {
             var manifest = [];
-            for(var i = 0; i < num; i++) {
+            for(var i = 0; i < list.length; i++) {
                 manifest.push({ src:"res/"+list[i]+"-word.jpg", id: list[i]+"-word"});
                 manifest.push({ src:"res/"+list[i]+"-image.jpg", id: list[i]+"-image"});
             }
             preload = new createjs.LoadQueue();
             preload.loadManifest(manifest, true);
-            preload.on("complete", handleComplete);
+            preload.on("complete", resetGame);
         }
 
-        function handleComplete(event) {
+        function clearGame() {
+            for(var i = 0; i < num; i++) {
+                stage.removeChild(words[i]);
+                stage.removeChild(pictures[i]);
+            }
+        }
+
+        function resetGame() {
+            Shuffle(list);
             var randomList = [];
             for(var i = 0; i < num; i++) {
                 randomList[i] = list[i];
@@ -82,7 +91,8 @@
 
             Shuffle(randomList);
             for(var i = 0; i < num; i++) {
-                words[i] = new createjs.Bitmap(preload.getResult(randomList[i]+"-word"));
+                var path = preload.getResult(randomList[i]+"-word");
+                words[i] = new createjs.Bitmap(path);
                 words[i].name = randomList[i];
                 words[i].on("pressmove", pressMoveHandler);
                 words[i].on("pressup", pressUpHandler);
@@ -98,8 +108,11 @@
                 pictures[i].y = i * 165 + 40;
                 stage.addChild(pictures[i]);
             }
-            positionArrays();
+            stage.update();
+            //positionArrays();
         }
+
+
 
         function init() {
             stage = new createjs.Stage("canvas");
@@ -110,8 +123,6 @@
             instructions.x = centerText(instructions);
             instructions.y = 0;
             stage.addChild(instructions);
-
-            Shuffle(list);
             loadImages(list);
 
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 165 + 50);
