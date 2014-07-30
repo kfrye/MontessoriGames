@@ -9,6 +9,7 @@
         var stage;
         var buttonWidth = 250;
         var buttonHeight = 40;
+        var offset = 20;
 
         function init() {
             stage = new createjs.Stage("canvas");
@@ -16,7 +17,7 @@
             // Match Sounds Game
             var match = new CreateButton("Match Sounds", "#6600FF", buttonWidth, buttonHeight);
             match.x = stage.canvas.width/2 - buttonWidth/2;
-            match.y = 20;
+            match.y = offset;
             match.addEventListener("click", function() {
                 window.location = "match.html";
             });
@@ -25,7 +26,7 @@
             // Order the sounds game
             var sort = new CreateButton("Sort Sounds", "#993300", buttonWidth, buttonHeight);
             sort.x = stage.canvas.width/2 - buttonWidth/2;
-            sort.y = 2 * buttonHeight;
+            sort.y = buttonHeight + 2 * offset;
             sort.addEventListener("click", function() {
                 window.location = "order.html";
             });
@@ -34,7 +35,7 @@
             // Set clock game
             var setClock = new CreateButton("Set Clock", "#669900", buttonWidth, buttonHeight);
             setClock.x = stage.canvas.width/2 - buttonWidth/2;
-            setClock.y = 3 * buttonHeight + .5 * buttonHeight;
+            setClock.y = 2 * buttonHeight + 3 * offset;
             setClock.addEventListener("click", function() {
                 window.location = "setclock.html";
             });
@@ -43,11 +44,19 @@
             // Read clock game
             var readClock = new CreateButton("Read Clock", "#6600CC", buttonWidth, buttonHeight);
             readClock.x = stage.canvas.width/2 - buttonWidth/2;
-            readClock.y = 4 * buttonHeight +  buttonHeight;
+            readClock.y = 3 * buttonHeight +  4 * offset;
             readClock.addEventListener("click", function() {
                 window.location = "readclock.html";
             });
             stage.addChild(readClock);
+
+            var wordMatch = new CreateButton("Word Match", "#CC6600", buttonWidth, buttonHeight);
+            wordMatch.x = stage.canvas.width/2 - buttonWidth/2;
+            wordMatch.y = 4 * buttonHeight +  5 * offset;
+            wordMatch.addEventListener("click", function() {
+                window.location = "wordmatch.html";
+            });
+            stage.addChild(wordMatch);
 
             stage.update();
         }
