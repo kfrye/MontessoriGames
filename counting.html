@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Count Beads</title>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+    <script>
+        var circleRadius = 10;
+        var stage;
+        var offset = 10;
+        var container;
+
+        function createBeads(num) {
+            for(var i = 0; i < num; i++) {
+                var bead = new createjs.Shape();
+                bead.graphics.beginFill("red").drawCircle(0, 0, circleRadius);
+                bead.x = getXCoor(i);
+                bead.y = getYCoor(i);
+                container.addChild(bead);
+            }
+        }
+
+        function getXCoor(num) {
+            var col = Math.floor(num / 5);
+            var section = Math.floor(num / 25);
+            return col * 2 * circleRadius + 2 * offset + 2 * offset * section;
+        }
+
+        function getYCoor(num) {
+            var row = num % 5;
+            return row * 2 * circleRadius + offset;
+        }
+
+        function init() {
+            stage = new createjs.Stage("canvas");
+            container = new createjs.Container();
+            createBeads(31);
+            stage.addChild(container);
+            stage.update();
+
+        }
+    </script>
+
+
+</head>
+
+<body onload="init()">
+<canvas id="canvas" width="640" height="480"></canvas>
+</body>
+</html>

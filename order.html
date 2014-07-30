@@ -126,14 +126,14 @@
             orderCircles();
 
             // Create submit button
-            var submitButton = createButton("Submit", "#0066CC", buttonWidth, buttonHeight);
+            var submitButton = CreateButton("Submit", "#0066CC", buttonWidth, buttonHeight);
             submitButton.x = stage.canvas.width / 2 - buttonWidth - 30;
             submitButton.y = circleHeight * 3 + buttonHeight * 1.5;
             submitButton.on("click", submitClickHandler);
             stage.addChild(submitButton);
 
             // Create 'New Game' button
-            var newgameButton = createButton("New Game", "#CC3300", buttonWidth, buttonHeight);
+            var newgameButton = CreateButton("New Game", "#CC3300", buttonWidth, buttonHeight);
             newgameButton.x = stage.canvas.width / 2 + 30;
             newgameButton.y = circleHeight * 3 + buttonHeight * 1.5;
             newgameButton.on("click", newGameClickHandler);
