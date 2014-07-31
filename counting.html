@@ -6,46 +6,118 @@
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
     <script type="text/javascript" src="MontessoriTools.js"></script>
     <script>
-        var circleRadius = 10;
+        var circleRadius = 13;
         var stage;
         var offset = 10;
         var container;
+        var num;
+        var statusLabel;
+        var buttonWidth = 150;
+        var buttonHeight = 40;
 
         function createBeads(num) {
             for(var i = 0; i < num; i++) {
                 var bead = new createjs.Shape();
                 bead.graphics.beginFill("red").drawCircle(0, 0, circleRadius);
-                bead.x = getXCoor(i);
+                bead.x = getXCoor(i, num);
                 bead.y = getYCoor(i);
                 container.addChild(bead);
             }
         }
 
-        function getXCoor(num) {
+        // Get the x Coordinate inside the container for the bead.
+        // Need to know the max number in order to get the spacing correct
+        function getXCoor(num, max) {
             var col = Math.floor(num / 5);
             var section = Math.floor(num / 25);
-            return col * 2 * circleRadius + 2 * offset + 2 * offset * section;
+            var extraSpace = 0;
+            var maxCol = Math.floor(max / 5);
+            if(col == maxCol && col > 0 && num % 5 != 4 && col != section * 5)
+                extraSpace = offset;
+
+            return col * 2 * circleRadius + 2 * offset + offset * section + extraSpace;
         }
 
+        // Get the y coordinate inside the container for the bead
         function getYCoor(num) {
             var row = num % 5;
             return row * 2 * circleRadius + offset;
         }
 
+        // Get the width of the entire beadset. Used for centering purposes.
+        function getWidth(num) {
+            var xMax = getXCoor(num, num);
+            var xMin = getXCoor(1, num);
+            return xMax - xMin;
+        }
+
+        // Get a random integer between 1 and 100
+        function getNum() {
+            return Math.ceil(Math.random() * 100);
+        }
+
+        // New game click handler
+        function newClockButtonClickHandler() {
+            container.removeAllChildren();
+            num = getNum();
+            var width = getWidth(num);
+            container.x = stage.canvas.width / 2 - width / 2;
+            createBeads(num);
+            statusLabel.text = "";
+            document.getElementById("txtCount").value = "";
+            stage.update();
+        }
+
+        function submitButtonClickHandler() {
+            if(document.getElementById("txtCount").value == num) {
+                statusLabel.text = "Success!";
+                statusLabel.x = centerText(statusLabel);
+            }
+            else {
+                statusLabel.text = "Try Again";
+                statusLabel.x = centerText(statusLabel);
+            }
+            stage.update();
+        }
+
         function init() {
             stage = new createjs.Stage("canvas");
-            container = new createjs.Container();
-            createBeads(31);
-            stage.addChild(container);
-            stage.update();
 
+            // Add instructions for the game to the top of the screen
+            var instructions = new createjs.Text("Count the beads:", "bold 25px Arial", "#0066CC");
+            instructions.x = centerText(instructions);
+            instructions.y = 20;
+            stage.addChild(instructions);
+
+            // Place the beads
+            container = new createjs.Container();
+            num = getNum();
+            var width = getWidth(num);
+            container.x = stage.canvas.width / 2 - width / 2;
+            container.y = 65;
+            createBeads(num);
+            stage.addChild(container);
+
+            // Add the buttons
+            createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 270);
+            createNewClockButton(stage.canvas.width/2 + 12, 270, "New Game");
+
+            // Add a status message to the bottom of the screen
+            statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");
+            statusLabel.text = "Beginning status";
+            statusLabel.x = centerText(statusLabel);
+            statusLabel.y = 330;
+            statusLabel.text = "";
+            stage.addChild(statusLabel);
+
+            stage.update();
         }
     </script>
-
-
 </head>
 
 <body onload="init()">
 <canvas id="canvas" width="640" height="480"></canvas>
+<div style="position: absolute; top: 220px; left: 250px; color: #0066CC; font: bold 25px Arial">
+    Answer: <input id="txtCount" text style="text-align: center; font-size: 25px; width:75px; color: white; background-color: #0099FF" size="2" />
 </body>
 </html>

@@ -44,7 +44,7 @@
             // Read clock game
             var readClock = new CreateButton("Read Clock", "#6600CC", buttonWidth, buttonHeight);
             readClock.x = stage.canvas.width/2 - buttonWidth/2;
-            readClock.y = 3 * buttonHeight +  4 * offset;
+            readClock.y = 3 * buttonHeight + 4 * offset;
             readClock.addEventListener("click", function() {
                 window.location = "readclock.html";
             });
@@ -52,16 +52,21 @@
 
             var wordMatch = new CreateButton("Word Match", "#CC6600", buttonWidth, buttonHeight);
             wordMatch.x = stage.canvas.width/2 - buttonWidth/2;
-            wordMatch.y = 4 * buttonHeight +  5 * offset;
+            wordMatch.y = 4 * buttonHeight + 5 * offset;
             wordMatch.addEventListener("click", function() {
                 window.location = "wordmatch.html";
             });
             stage.addChild(wordMatch);
 
+            var count = new CreateButton("Count Beads", "#0099CC", buttonWidth, buttonHeight);
+            count.x = stage.canvas.width/2 - buttonWidth/2;
+            count.y = 5 * buttonHeight + 6 * offset;
+            count.addEventListener("click", function() {
+                window.location = "counting.html";
+            });
+            stage.addChild(count);
             stage.update();
         }
-
-
     </script>
 </head>
 <body onLoad="init();">
