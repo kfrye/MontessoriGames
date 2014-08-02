@@ -171,3 +171,12 @@ function createNewClockButton(xCoor, yCoor, text) {
     newClockText.y = 20;
     newClockContainer.addChild(newClockText);
 }
+
+function CreateBorder() {
+    var border = new createjs.Shape();
+    border.graphics.beginStroke("blue");
+    border.graphics.setStrokeStyle(5);
+    border.snapToPixel = true;
+    border.graphics.drawRoundRect(0, 0, stageWidth, stageHeight, 20);
+    stage.addChild(border);
+}

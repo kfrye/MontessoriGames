@@ -15,6 +15,8 @@
         var buttonHeight = 40;
         var buttonWidth = 150;
         var statusMatch;
+        var stageWidth = 480;
+        var stageHeight = 640;
 
         function Button(color, sound) {
             this.shape = new createjs.Shape();
@@ -43,6 +45,7 @@
 
             circle.shape.y = (index + 1) * (circleHeight * 2.5) + circleHeight;
             circle.shape.on("click", handleClick, null, false, [circle.color, circle.sound] );
+            circle.shape.on("mouseover", handleMouseOver);
 
             stage.addChild(circle.shape);
         }
@@ -72,6 +75,10 @@
                 statusMatch.text = "Correct!";
             }
             stage.update();
+        }
+
+        function handleMouseOver(event) {
+            event.target.alpha *= .80
         }
 
         // generate two arrays of random numbers of size num
@@ -115,7 +122,9 @@
 
         function init() {
             stage = new createjs.Stage("canvas");
+            stage.enableMouseOver(20);
             loadSounds();
+            CreateBorder();
 
             // Add instructions for the game to the top of the screen
             var instructions = new createjs.Text("Match the sounds on left and right:", "bold 25px Arial", "#0066CC");
