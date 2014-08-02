@@ -51,7 +51,7 @@ function centerText(label) {
 
 // add the clock to the canvas
 function createClock(xCoor, yCoor) {
-    clockContainer = stage.addChild(new createjs.Container()); // container to hold the clock
+    var clockContainer = stage.addChild(new createjs.Container()); // container to hold the clock
     clockContainer.x = xCoor;
     clockContainer.y = yCoor;
 
@@ -64,15 +64,16 @@ function createClock(xCoor, yCoor) {
     }
 
     // Add clock minute hand
-    min = new createjs.Shape();
+    var min = new createjs.Shape();
     min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 10);
     clockContainer.addChild(min);
 
     // Add clock hour hand
-    hr = new createjs.Shape();
+    var hr = new createjs.Shape();
     hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
     clockContainer.addChild(hr);
     drawNumbers(xCoor, yCoor);
+    return [clockContainer, hr, min];
 }
 
 // Add numbers to the clock
@@ -128,8 +129,7 @@ function getAngle(x, y) {
 }
 
 function getAngleFromNumber(num) {
-    var angle = 30 * (num - 3);
-    return angle;
+    return 30 * (num - 3);
 }
 
 // Add the submit button to the canvas

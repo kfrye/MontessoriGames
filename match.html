@@ -43,14 +43,14 @@
         function createCircles(redarray, bluearray) {
             // Sets up inheritance to createjs.Container for button object
             Button.prototype = Object.create(createjs.Container.prototype); // See note below
-            Button.prototype.constructor = createjs.Container;
+            //Button.prototype.constructor = createjs.Container;
             for(var i = 0; i < num; i++) {
                 rCircle[i] = createButton("red", redarray[i], i);
                 rCircle[i].x = stage.canvas.width/2 - circleHeight * 2;
                 stage.addChild(rCircle[i]);
             }
 
-            for(var i = 0; i < num; i++) {
+            for(i = 0; i < num; i++) {
                 lCircle[i] = createButton("blue", bluearray[i], i);
                 lCircle[i].x = stage.canvas.width/2 + circleHeight * 2;
                 stage.addChild(lCircle[i]);
@@ -81,7 +81,7 @@
             var button = stage.getChildByName(color+sound);
             button.addChild(speaker);
             stage.update();
-            soundEvent = createjs.Sound.play(sound);
+            var soundEvent = createjs.Sound.play(sound);
 
             // When sound is completed, remove speaker from container
             soundEvent.addEventListener("complete", function() {
@@ -120,7 +120,7 @@
 
         // Triggered when mouse is rolled over container
         function handleMouseOver(event) {
-            event.target.alpha *= .60
+            event.target.alpha *= .60;
             stage.update();
         }
 

@@ -15,10 +15,11 @@
         var hourHandLength = clockRadius/2;
         var time, min, hr;
         var statusLabel;
+        var stage;
 
         function resetClock(time) {
             time = generateTime(time);
-            hr.rotation = getAngleFromNumber(time.hour);;
+            hr.rotation = getAngleFromNumber(time.hour);
             var minNum;
             var hourTweak;
 
@@ -61,6 +62,7 @@
         // Handle click event to the New Clock button
         function newGameButtonClickHandler() {
             resetClock(time);
+            statusLabel.text = "";
             document.getElementById("txtHour").value = "";
             document.getElementById("txtMin").value = "";
             stage.update();
@@ -76,7 +78,10 @@
             stage.addChild(instructions);
 
             time = {};
-            createClock(stage.canvas.width/2, 250);
+            var temp = createClock(stage.canvas.width/2, 250);
+            hr = temp[1];
+            min = temp[2];
+
             resetClock(time);
 
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 520);
@@ -99,9 +104,9 @@
 </canvas>
 <form>
     <div style="position: absolute; top: 450px; left: 175px; font-size: 35px; color: #0099FF">
-    <input id="txtHour" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
+    <input id="txtHour" style="font-family: Arial, sans-serif; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
     :
-    <input id="txtMin" text style="font-family: Arial; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
+    <input id="txtMin" style="font-family: Arial, sans-serif; text-align: center; font-size: 35px; width:50px; color: white; background-color: #0099FF" size="2" />
     </div>
     <br>
 </form>

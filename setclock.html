@@ -114,7 +114,11 @@
 
         function init() {
             stage = new createjs.Stage("canvas"); // points to the canvas element in html body
-            createClock(stage.canvas.width/2, stage.canvas.height/2);
+            var temp = createClock(stage.canvas.width/2, stage.canvas.height/2);
+            clockContainer = temp[0];
+            hr = temp[1];
+            min = temp[2];
+
             min.on("pressmove", clockHandPressMoveHandler);
             hr.on("pressmove", clockHandPressMoveHandler);
             initializeHands();

@@ -35,9 +35,7 @@
 
         // Performs the actual move animation for the buttons
         function positionArrays() {
-            var length = num;
-
-            for(var i = 0; i < length; i++) {
+            for(var i = 0; i < num; i++) {
                 var posX = 50;
                 var posY = i * 165 + 90;
                 createjs.Tween.get(words[i]).to({x:posX},250).to({y:posY}, 250);
@@ -90,7 +88,7 @@
             }
 
             Shuffle(randomList);
-            for(var i = 0; i < num; i++) {
+            for(i = 0; i < num; i++) {
                 var path = preload.getResult(randomList[i]+"-word");
                 words[i] = new createjs.Bitmap(path);
                 words[i].name = randomList[i];
