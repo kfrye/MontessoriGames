@@ -59,7 +59,7 @@
         }
 
         // Handle click event to the New Clock button
-        function newClockButtonClickHandler() {
+        function newGameButtonClickHandler() {
             resetClock(time);
             document.getElementById("txtHour").value = "";
             document.getElementById("txtMin").value = "";
@@ -80,7 +80,7 @@
             resetClock(time);
 
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 520);
-            createNewClockButton(stage.canvas.width/2 + 12, 520, "New Clock");
+            createNewGameButton(stage.canvas.width/2 + 12, 520, "New Clock");
 
             // Add a status message to the bottom of the screen
             statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");

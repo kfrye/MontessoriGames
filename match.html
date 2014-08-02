@@ -9,76 +9,125 @@
         var stage;
         var rCircle = [];
         var lCircle = [];
-        var num = 5;
+        var num = 6;
         var match = 0;
         var circleHeight = 30;
         var buttonHeight = 40;
         var buttonWidth = 150;
-        var statusMatch;
+        var statusLabel;
         var stageWidth = 480;
         var stageHeight = 640;
+        var speaker;
 
+        // Button class that inherits createjs.Container and adds a couple of attributes
         function Button(color, sound) {
-            this.shape = new createjs.Shape();
+            createjs.Container.call(this);
             this.color = color;
             this.sound = "note"+(sound+1);
-            this.shape.name = this.color+this.sound;
+            this.name = this.color+this.sound;
         }
 
+        // Create button and assign event handlers
+        function createButton(color, sound, index) {
+            var circle = new Button(color, sound);
+            var shape = createColorCircle(color);
+            circle.addChild(shape);
+            circle.y = (index + 1) * (circleHeight * 2.5) + circleHeight;
+            circle.on("click", handleClick, null, false, [color, "note"+(sound+1)]);
+            circle.on("mouseover", handleMouseOver);
+            circle.on("mouseout", handleMouseOff);
+            return circle;
+        }
+
+        // Create red and blue arrays
+        function createCircles(redarray, bluearray) {
+            // Sets up inheritance to createjs.Container for button object
+            Button.prototype = Object.create(createjs.Container.prototype); // See note below
+            Button.prototype.constructor = createjs.Container;
+            for(var i = 0; i < num; i++) {
+                rCircle[i] = createButton("red", redarray[i], i);
+                rCircle[i].x = stage.canvas.width/2 - circleHeight * 2;
+                stage.addChild(rCircle[i]);
+            }
+
+            for(var i = 0; i < num; i++) {
+                lCircle[i] = createButton("blue", bluearray[i], i);
+                lCircle[i].x = stage.canvas.width/2 + circleHeight * 2;
+                stage.addChild(lCircle[i]);
+            }
+        }
+
+        // This object keeps track of last sound played
         var lastSound = {
             color: "start",
             sound: 0
         };
 
-        function drawCircle(circle, index) {
-            circle.shape.graphics.beginFill(circle.color).drawCircle(0, 0, circleHeight);
-
-            // red circles go into the first column
-            if(circle.color == "red") {
-                circle.shape.x = stage.canvas.width/2 - circleHeight * 2;
-            }
-
-            // blue circles go into the second column
-            else {
-                circle.shape.x = stage.canvas.width/2 + circleHeight * 2;
-            }
-
-            circle.shape.y = (index + 1) * (circleHeight * 2.5) + circleHeight;
-            circle.shape.on("click", handleClick, null, false, [circle.color, circle.sound] );
-            circle.shape.on("mouseover", handleMouseOver);
-
-            stage.addChild(circle.shape);
+        // Creates a color circle that is added to container objects
+        function createColorCircle(color) {
+            var circle = new createjs.Shape();
+            circle.graphics.beginFill(color).drawCircle(0, 0, circleHeight);
+            return circle;
         }
 
+        // Click handler
         function handleClick(event, data) {
+            // Data passed into the click handler to determine button characteristics
             var color = data[0];
             var sound = data[1];
 
-            createjs.Sound.play(sound);
+            // Find the container that was clicked and add a speaker to it while the sound
+            // is playing
+            var button = stage.getChildByName(color+sound);
+            button.addChild(speaker);
+            stage.update();
+            soundEvent = createjs.Sound.play(sound);
 
+            // When sound is completed, remove speaker from container
+            soundEvent.addEventListener("complete", function() {
+                button.removeChild(speaker);
+                stage.update();
+            });
+
+            // Check for success when alternating colors
             if(color != lastSound["color"]) {
                 if(sound === lastSound["sound"]) {
+
+                    // When last two sounds played are the same, set both containers
+                    // to display green circles and remove click/mouse handlers
                     var red = stage.getChildByName("red"+sound);
                     var blue = stage.getChildByName("blue"+sound);
-                    red.graphics.beginFill("green").drawCircle(0, 0, circleHeight);
-                    blue.graphics.beginFill("green").drawCircle(0, 0, circleHeight);
+                    red.removeAllChildren();
+                    blue.removeAllChildren();
                     red.removeAllEventListeners();
                     blue.removeAllEventListeners();
+                    red.addChild(createColorCircle("green"));
+                    blue.addChild(createColorCircle("green"));
                     match++;
+                    stage.update();
                 }
             }
 
             lastSound["color"] = color;
             lastSound["sound"] = sound;
 
+            // Check if all colors have been matched
             if(match == num) {
-                statusMatch.text = "Correct!";
+                statusLabel.text = "Correct!";
             }
             stage.update();
         }
 
+        // Triggered when mouse is rolled over container
         function handleMouseOver(event) {
-            event.target.alpha *= .80
+            event.target.alpha *= .60
+            stage.update();
+        }
+
+        // Triggered when mouse is rolled off container
+        function handleMouseOff(event) {
+            event.target.alpha = 1;
+            stage.update();
         }
 
         // generate two arrays of random numbers of size num
@@ -96,33 +145,39 @@
             return [redArray, blueArray];
         }
 
+        // Reset button for new sound.
+        function resetButton(button, color, sound) {
+            button.removeAllChildren();
+            button.removeAllEventListeners();
+            button.sound = "note"+(sound+1);
+            button.name = color+"note"+(sound+1);
+            button.addChild(createColorCircle(color));
+            button.on("click", handleClick, null, false, [color, "note"+(sound+1)] );
+            button.on("mouseover", handleMouseOver);
+            button.on("mouseout", handleMouseOff);
+        }
+
         // Click to start a new game
-        function newGameClickHandler() {
+        function newGameButtonClickHandler() {
+            match = 0;
+            statusLabel.text = "";
             var buttonArray = randomizeArrays();
             var redArray = buttonArray[0];
             var blueArray = buttonArray[1];
-
-            for(var i=0; i<num; i++) {
-                var sound = "note"+(redArray[i]+1);
-                rCircle[i].shape.removeAllEventListeners();
-                rCircle[i].sound = "note"+sound;
-                rCircle[i].shape.name = "red"+sound;
-                rCircle[i].shape.graphics.beginFill("red").drawCircle(0, 0, circleHeight);
-                rCircle[i].shape.on("click", handleClick, null, false, ["red", sound] );
-
-                sound = "note"+(blueArray[i]+1);
-                lCircle[i].shape.removeAllEventListeners();
-                lCircle[i].sound = "note"+sound;
-                lCircle[i].shape.name = "blue"+sound;
-                lCircle[i].shape.graphics.beginFill("blue").drawCircle(0, 0, circleHeight);
-                lCircle[i].shape.on("click", handleClick, null, false, ["blue", sound] );
+            for(var i = 0; i < num; i++ ) {
+                resetButton(rCircle[i], "red", redArray[i]);
+                resetButton(lCircle[i], "blue", blueArray[i]);
             }
             stage.update();
         }
 
+        // Initialized when page is loaded
         function init() {
             stage = new createjs.Stage("canvas");
             stage.enableMouseOver(20);
+            speaker = new createjs.Bitmap("res/speaker_louder_32.png");
+            speaker.x = -circleHeight/2;
+            speaker.y = -circleHeight/2;
             loadSounds();
             CreateBorder();
 
@@ -137,27 +192,18 @@
             var redArray = buttonArray[0];
             var blueArray = buttonArray[1];
 
-            // Create and draw the buttons
-            for(var i=0; i < num; i++) {
-                rCircle[i] = new Button("red", redArray[i]);
-                lCircle[i] = new Button("blue", blueArray[i]);
-                drawCircle(lCircle[i], i);
-                drawCircle(rCircle[i], i);
-            }
+            // Load circles
+            createCircles(redArray, blueArray);
 
             // Create 'New Game' button
-            var newgameButton = CreateButton("New Game", "#0066CC", buttonWidth, buttonHeight);
-            newgameButton.x = stage.canvas.width / 2 - buttonWidth/2;
-            newgameButton.y = circleHeight * 14 + buttonHeight;
-            newgameButton.on("click", newGameClickHandler);
-            stage.addChild(newgameButton);
+            createNewGameButton(stage.canvas.width / 2 - buttonWidth/2, circleHeight * 17 +.5 * buttonHeight, "New Game");
 
             //Create status message
-            statusMatch = new createjs.Text("Correct!", "bold 25px Arial", "#003300");
-            statusMatch.x = centerText(statusMatch);
-            statusMatch.y = circleHeight * 17 + buttonHeight;
-            statusMatch.text = "";
-            stage.addChild(statusMatch);
+            statusLabel = new createjs.Text("Correct!", "bold 25px Arial", "#003300");
+            statusLabel.x = centerText(statusLabel);
+            statusLabel.y = circleHeight * 19 + .5 * buttonHeight;
+            statusLabel.text = "";
+            stage.addChild(statusLabel);
             stage.update();
         }
     </script>

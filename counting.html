@@ -57,7 +57,7 @@
         }
 
         // New game click handler
-        function newClockButtonClickHandler() {
+        function newGameButtonClickHandler() {
             container.removeAllChildren();
             num = getNum();
             var width = getWidth(num);
@@ -100,7 +100,7 @@
 
             // Add the buttons
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 270);
-            createNewClockButton(stage.canvas.width/2 + 12, 270, "New Game");
+            createNewGameButton(stage.canvas.width/2 + 12, 270, "New Game");
 
             // Add a status message to the bottom of the screen
             statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");

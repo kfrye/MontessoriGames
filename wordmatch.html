@@ -59,7 +59,7 @@
             }
         }
 
-        function newClockButtonClickHandler() {
+        function newGameButtonClickHandler() {
             clearGame();
             resetGame();
         }
@@ -122,7 +122,7 @@
             loadImages(list);
 
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 165 + 50);
-            createNewClockButton(stage.canvas.width/2 + 10, 3 * 165 + 50, "New Game");
+            createNewGameButton(stage.canvas.width/2 + 10, 3 * 165 + 50, "New Game");
 
             statusMessage = new createjs.Text("Beginning Status", "bold 25px Arial", "#0066CC");
             statusMessage.x = centerText(statusMessage);
