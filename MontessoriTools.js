@@ -20,6 +20,34 @@ function CreateButton(labelText, color, width, height) {
     return cont;
 }
 
+// Create button and assign event handlers
+function CreateCircleButton(color, sound) {
+    var circle = new Button(color, sound);
+    var shape = CreateColorCircle(color);
+    circle.addChild(shape);
+    circle.on("click", handleClick, null, false, [color, "note"+(sound+1)]);
+    circle.on("mouseover", handleMouseOver);
+    circle.on("mouseout", handleMouseOff);
+    return circle;
+}
+
+// Creates a color circle that is added to container objects
+function CreateColorCircle(color) {
+    var circle = new createjs.Shape();
+    circle.graphics.beginFill(color).drawCircle(0, 0, circleHeight);
+    return circle;
+}
+
+// Create a button with a shape inside
+// Button class that inherits createjs.Container and adds a couple of attributes
+function Button(color, sound) {
+    createjs.Container.call(this);
+    this.color = color;
+    this.sound = "note"+(sound+1);
+    this.name = this.color+this.sound;
+    this.number = 0;
+}
+
 function loadSounds() {
     if (!createjs.Sound.initializeDefaultPlugins()) {return;}
 
@@ -179,4 +207,16 @@ function CreateBorder() {
     border.snapToPixel = true;
     border.graphics.drawRoundRect(0, 0, stageWidth, stageHeight, 20);
     stage.addChild(border);
+}
+
+// Triggered when mouse is rolled over container
+function handleMouseOver(event) {
+    event.target.alpha *= .60;
+    stage.update();
+}
+
+// Triggered when mouse is rolled off container
+function handleMouseOff(event) {
+    event.target.alpha = 1;
+    stage.update();
 }
