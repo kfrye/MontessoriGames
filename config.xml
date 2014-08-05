@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "com.poofygoof.montessori"
+        version     = "1.0.0" >
+
+    <name>Montessori Games</name>
+
+    <description>
+        A collection of games for toddlers based on Montessori principles.
+    </description>
+
+    <author href="https://github.com/kfrye/MontessoriGames" email="kfrye@pdx.edu">
+        Kristina Frye
+    </author>
+
+    <gap:platform name="android" />
+</widget>
