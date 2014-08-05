@@ -10,9 +10,12 @@
         var buttonWidth = 250;
         var buttonHeight = 40;
         var offset = 20;
+        var stageWidth = 480;
+        var stageHeight = 640;
 
         function init() {
             stage = new createjs.Stage("canvas");
+            CreateBorder();
 
             // Match Sounds Game
             var match = new CreateButton("Match Sounds", "#6600FF", buttonWidth, buttonHeight);

@@ -8,8 +8,8 @@
 
     <script>
         var stage, clockContainer, min, hr;
-        var stageWidth = 640;
-        var stageHeight = 480;
+        var stageWidth = 480;
+        var stageHeight = 640;
         var clockRadius = 150;
         var buttonWidth = 150;
         var buttonHeight = 40;
@@ -124,6 +124,7 @@
             initializeHands();
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, stage.canvas.height/2 + clockRadius + 50);
             createNewGameButton(stage.canvas.width/2 + 30, stage.canvas.height/2 + clockRadius + 50, "New Clock");
+            CreateBorder();
 
             // Add instructions for the game to the top of the screen
             var instructions = new createjs.Text("Set the clock:", "bold 25px Arial", "#0066CC");

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Spelling</title>
+    <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
+    <script type="text/javascript" src="MontessoriTools.js"></script>
+    <script>
+        var stage;
+        var list = [
+            "baby", "bird", "boy", "cat", "dog", "girl", "apple", "car", "tractor"
+        ];
+        var alphabet = [
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+                "r", "s", "t", "u", "v", "w", "x", "y", "z"
+        ];
+        var pictures = [];
+        var letters = [];
+        var imageContainer = [];
+        var letterContainer;
+        var num = 3;
+        var buttonWidth = 150;
+        var buttonHeight = 40;
+        var preload;
+        var statusMessage;
+        var stageWidth = 640;
+        var stageHeight = 480;
+        var offset = 20;
+
+        // Reset the letters array
+        function clearLetters() {
+            for(var i = 0; i < num; i++) {
+                while(letters[i].length > 0) {
+                    letters[i].pop();
+                }
+            }
+        }
+
+        function getPictures() {
+            Shuffle(list);
+            for(var i = 0; i < num; i++) {
+                pictures[i] = list[i];
+                var arr = [];
+                for(var j=0; j < list[i].length; j++) {
+                    arr[j] = list[i].substr(j, 1);
+                }
+                letters[i] = arr;
+            }
+        }
+
+        function loadImages() {
+            var manifest = [];
+            for(var i = 0; i < list.length; i++) {
+                manifest.push({ src:"res/"+list[i]+"-image.jpg", id: list[i]+"-image"});
+            }
+            for(i = 0; i < alphabet.length; i++) {
+                manifest.push( {src:"res/"+alphabet[i]+".jpg", id: alphabet[i]+"-image"});
+            }
+            preload = new createjs.LoadQueue();
+            preload.loadManifest(manifest, true);
+            preload.on("complete", resetGame);
+        }
+
+        function resetGame() {
+            //clearLetters();
+            getPictures();
+            letterContainer = new createjs.Container();
+            stage.addChild(letterContainer);
+            var letX = 0;
+
+            for(var i = 0; i < num; i++) {
+                imageContainer[i] = new createjs.Container();
+                stage.addChild(imageContainer[i]);
+                var path = preload.getResult(pictures[i]+"-image");
+                var bmp = new createjs.Bitmap(path);
+                imageContainer[i].addChild(bmp);
+                imageContainer[i].x = (i * 150) + (i + 1) * offset;
+                imageContainer[i].y = 100;
+
+
+                for(var j = 0; j < letters[i].length; j++) {
+                    path = preload.getResult(letters[i][j]+"-image");
+                    var letter = new createjs.Bitmap(path);
+                    letter.x = letX * (offset + 10);
+                    letX++;
+                    letterContainer.addChild(letter);
+                }
+
+            }
+            stage.update();
+        }
+
+        function init() {
+            stage = new createjs.Stage("canvas");
+            loadImages();
+
+
+        }
+    </script>
+</head>
+<body onLoad="init();">
+<canvas id="canvas" width="640" height="480">
+</canvas>
+</body>
+</html>

@@ -93,12 +93,12 @@ function createClock(xCoor, yCoor) {
 
     // Add clock minute hand
     var min = new createjs.Shape();
-    min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 10);
+    min.graphics.beginFill("black").drawRect(0,0, clockRadius - 15, 12);
     clockContainer.addChild(min);
 
     // Add clock hour hand
     var hr = new createjs.Shape();
-    hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 14);
+    hr.graphics.beginFill("black").drawRect(0,0, clockRadius/2, 16);
     clockContainer.addChild(hr);
     drawNumbers(xCoor, yCoor);
     return [clockContainer, hr, min];

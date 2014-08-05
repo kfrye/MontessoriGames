@@ -6,8 +6,8 @@
     <script type="text/javascript" src="createjs-2013.12.12.min.js"></script>
     <script type="text/javascript" src="MontessoriTools.js"></script>
     <script>
-        var stageWidth = 640;
-        var stageHeight = 480;
+        var stageWidth = 480;
+        var stageHeight = 640;
         var clockRadius = 150;
         var buttonWidth = 150;
         var buttonHeight = 40;
@@ -83,7 +83,7 @@
             min = temp[2];
 
             resetClock(time);
-
+            CreateBorder();
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 520);
             createNewGameButton(stage.canvas.width/2 + 12, 520, "New Clock");
 

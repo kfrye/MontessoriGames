@@ -14,6 +14,8 @@
         var statusLabel;
         var buttonWidth = 150;
         var buttonHeight = 40;
+        var stageWidth = 640;
+        var stageHeight = 480;
 
         function createBeads(num) {
             for(var i = 0; i < num; i++) {
@@ -101,6 +103,7 @@
             // Add the buttons
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 17, 270);
             createNewGameButton(stage.canvas.width/2 + 12, 270, "New Game");
+            CreateBorder();
 
             // Add a status message to the bottom of the screen
             statusLabel = new createjs.Text("status", "bold 30px Arial", "#003300");

@@ -18,6 +18,8 @@
         var buttonHeight = 40;
         var preload;
         var statusMessage;
+        var stageWidth = 480;
+        var stageHeight = 640;
 
         // Move the button around when the mouse is clicked and held
         function pressMoveHandler(evt){
@@ -121,6 +123,7 @@
 
             createSubmitButton(stage.canvas.width/2 - buttonWidth - 30, 3 * 165 + 50);
             createNewGameButton(stage.canvas.width/2 + 10, 3 * 165 + 50, "New Game");
+            CreateBorder();
 
             statusMessage = new createjs.Text("Beginning Status", "bold 25px Arial", "#0066CC");
             statusMessage.x = centerText(statusMessage);
