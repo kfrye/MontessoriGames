@@ -80,6 +80,12 @@
             stage.update();
         }
 
+        function removeCircles() {
+           for(var i=0; i<num; i++) {
+              circles[i].removeAllChildren();
+           }           
+        }
+
         // Click to start a new game
         function newGameButtonClickHandler() {
             orderCircles();
