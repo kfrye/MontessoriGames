@@ -17,4 +17,16 @@ Because the term Montessori was invalidated as a trademark by the US Patent offi
 
 This software is available under GPLv3. Please see the COPYING file in this repository for more details. It is written in HTML5 and Javascript and therefore can be run with any modern web browser such as Chrome, Firefox, Opera, MS Explorer 11, etc. This project was developed within the Jetbrains Webstorms IDE, but the files can be edited with any text editor.
 
+The wordmatch.html game includes some pictures obtained from Flickr, available under Creative Commons. See the following links for more information on the licensing of each photo:
+
+    -- Car: https://flic.kr/p/5GSFdA
+    -- Apple: https://flic.kr/p/f2sdB
+    -- Boy: https://flic.kr/p/5zbEwP
+    -- Girl: https://flic.kr/p/7TgfU
+    -- Baby: https://flic.kr/p/4Uk61t
+    -- Bird: https://flic.kr/p/dcNMWS
+    -- Cat: https://flic.kr/p/Kt4uB
+    -- Dog: https://flic.kr/p/5bgGb9
+    -- Tractor: https://flic.kr/p/mhZPJ
+
 Contact Info: Kristina Frye (kfrye@pdx.edu)
