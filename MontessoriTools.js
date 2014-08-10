@@ -25,7 +25,7 @@ function CreateCircleButton(color, sound) {
     var circle = new Button(color, sound);
     var shape = CreateColorCircle(color);
     circle.addChild(shape);
-    circle.on("click", handleClick, null, false, [color, "note"+(sound+1)]);
+    circle.on("click", handleClick, null, false, [color, "note"+(sound+1), circle.id]);
     circle.on("mouseover", handleMouseOver);
     circle.on("mouseout", handleMouseOff);
     return circle;
@@ -44,7 +44,7 @@ function Button(color, sound) {
     createjs.Container.call(this);
     this.color = color;
     this.sound = "note"+(sound+1);
-    this.name = this.color+this.sound;
+    this.name = this.color+this.sound+"-"+this.id;
     this.number = 0;
 }
 

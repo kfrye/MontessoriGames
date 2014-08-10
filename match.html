@@ -44,15 +44,22 @@
             sound: 0
         };
 
+        function getCircleBySound(arr, sound) {
+            for(var i = 0; i < arr.length; i++) {
+                if(arr[i].sound == sound)
+                    return arr[i]
+            }
+        }
         // Click handler
         function handleClick(event, data) {
             // Data passed into the click handler to determine button characteristics
             var color = data[0];
             var sound = data[1];
+            var id = data[2];
 
             // Find the container that was clicked and add a speaker to it while the sound
             // is playing
-            var button = stage.getChildByName(color+sound);
+            var button = stage.getChildByName(color+sound+"-"+id);
             button.addChild(speaker);
             stage.update();
             var soundEvent = createjs.Sound.play(sound);
@@ -69,14 +76,14 @@
 
                     // When last two sounds played are the same, set both containers
                     // to display green circles and remove click/mouse handlers
-                    var red = stage.getChildByName("red"+sound);
-                    var blue = stage.getChildByName("blue"+sound);
+                    var red = getCircleBySound(lCircle, sound);
+                    var blue = getCircleBySound(rCircle, sound);
                     red.removeAllChildren();
                     blue.removeAllChildren();
                     red.removeAllEventListeners();
                     blue.removeAllEventListeners();
-                    red.addChild(createColorCircle("green"));
-                    blue.addChild(createColorCircle("green"));
+                    red.addChild(CreateColorCircle("green"));
+                    blue.addChild(CreateColorCircle("green"));
                     match++;
                     stage.update();
                 }
@@ -112,9 +119,9 @@
             button.removeAllChildren();
             button.removeAllEventListeners();
             button.sound = "note"+(sound+1);
-            button.name = color+"note"+(sound+1);
-            button.addChild(createColorCircle(color));
-            button.on("click", handleClick, null, false, [color, "note"+(sound+1)] );
+            button.name = color+"note"+(sound+1)+"-"+button.id;
+            button.addChild(CreateColorCircle(color));
+            button.on("click", handleClick, null, false, [color, "note"+(sound+1), button.id]);
             button.on("mouseover", handleMouseOver);
             button.on("mouseout", handleMouseOff);
         }

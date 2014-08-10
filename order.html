@@ -29,9 +29,9 @@
         function handleClick(event, data) {
             var color = data[0];
             var sound = data[1];
-
-            var button = stage.getChildByName(color+sound);
-            button.addChild(speaker);
+            var id = data[2];
+            var button = stage.getChildByName(color+sound+"-"+id);
+            button.addChildAt(speaker, 1);
             stage.update();
             var soundEvent = createjs.Sound.play(sound);
 
@@ -88,6 +88,7 @@
 
         // Click to start a new game
         function newGameButtonClickHandler() {
+            removeCircles();
             orderCircles();
             statusMsg.text = "";
             stage.update();
